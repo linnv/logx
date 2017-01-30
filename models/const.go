@@ -16,3 +16,7 @@ var (
 	outputDirection = [...]string{"STDOUT", "STDERR", "FILE"}
 	outputLevel     = [...]string{"DEBUG", "WARN", "FATAL"}
 )
+
+func Const(n byte) string {
+	return outputDirection[n]
+}
