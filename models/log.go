@@ -6,36 +6,34 @@ import (
 )
 
 type Logx struct {
-	underFile *os.File `json:"underFile"`
-	// outputLevel     int    `json:"outputLevel"`
+	underFile       *os.File
+	maxBuffer       int //@TODO bytes,maximun size of buffer to output at least
+	buf             []byte
 	outputDirection byte
 }
 
-//@TODO configuration
+//@TODO use configuration
 //Debugln
 func (l *Logx) Debugln(format string, paramters ...interface{}) {
-	const prefix = "[debug]"
 	// println(prefix, fmt.Sprintf(format+"\n", paramters...))
-	bytes := []byte(prefix + fmt.Sprintf(format+"\n", paramters...))
+	bytes := []byte(prefixDebug + fmt.Sprintf(format+"\n", paramters...))
 	os.Stdout.Write(bytes)
 	os.Stderr.Write(bytes)
 }
 
-//@TODO configuration
+//@TODO use configuration
 //Debug
 func (l *Logx) Debug(format string, paramters ...interface{}) {
-	const prefix = "[debug]"
 	//@TODO benchmark convertion efficency
-	bytes := []byte(prefix + fmt.Sprintf(format, paramters...))
+	bytes := []byte(prefixDebug + fmt.Sprintf(format, paramters...))
 	os.Stdout.Write(bytes)
 	os.Stderr.Write(bytes)
 }
 
-//@TODO configuration
+//@TODO use configuration
 //Warning To File
 func (l *Logx) Warn(format string, paramters ...interface{}) {
-	const prefix = "[warn]"
-	bytes := []byte(prefix + fmt.Sprintf(format+"\n", paramters...))
+	bytes := []byte(prefixWarn + fmt.Sprintf(format+"\n", paramters...))
 	l.underFile.Write(bytes)
 	os.Stdout.Write(bytes)
 	os.Stderr.Write(bytes)

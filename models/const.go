@@ -1,6 +1,11 @@
 package models
 
 const (
+	prefixDebug = "[debug]"
+	prefixWarn  = "[warn]"
+)
+
+const (
 	outputLevelDebug = byte(0x01)
 	outputLevelWarn  = byte(0x02)
 
