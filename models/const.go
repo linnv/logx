@@ -1,27 +1,37 @@
 package models
 
+import "os"
+
 const (
 	prefixDebug = "[debug]"
 	prefixWarn  = "[warn]"
+	prefixError = "[error]"
+	prefixFatal = "[fatal]"
 )
 
 const (
-	outputLevelDebug = byte(0x01)
-	outputLevelWarn  = byte(0x02)
-
-	outputLevelFatal = byte(0x03)
+	outputLevelDebug = byte(1 << iota)
+	outputLevelWarn
+	outputLevelError
+	outputLevelFatal
 )
 
-const (
-	outputDirectionDebug = byte(0x01)
-	outputDirectionWarn  = byte(0x02)
-)
+var gopath string
 
-var (
-	outputDirection = [...]string{"STDOUT", "STDERR", "FILE"}
-	outputLevel     = [...]string{"DEBUG", "WARN", "FATAL"}
-)
-
-func Const(n byte) string {
-	return outputDirection[n]
+func GetEnvs() string {
+	gopath = os.Getenv("GOPATH")
+	return gopath
 }
+
+// var (
+// 	outputLevel = [...]string{
+// 		outputLevelDebug: "DEBUG",
+// 		outputLevelWarn:  "WARN",
+// 		outputLevelError: "ERROR",
+// 		"FATAL",
+// 	}
+// )
+
+// func Const(n byte) string {
+// 	return outputLevel[n]
+// }

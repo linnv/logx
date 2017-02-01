@@ -3,40 +3,93 @@ package models
 import (
 	"fmt"
 	"os"
+	"runtime"
+	"strconv"
 )
 
 type Logx struct {
-	underFile       *os.File
-	maxBuffer       int //@TODO bytes,maximun size of buffer to output at least
-	buf             []byte
-	outputDirection byte
+	underFile *os.File
+	toFile    bool
+	// maxBuffer       int //@TODO bytes,maximun size of buffer to output at least
+	// buf             []byte
 }
 
-//@TODO use configuration
-//Debugln
-func (l *Logx) Debugln(format string, paramters ...interface{}) {
-	// println(prefix, fmt.Sprintf(format+"\n", paramters...))
-	bytes := []byte(prefixDebug + fmt.Sprintf(format+"\n", paramters...))
-	os.Stdout.Write(bytes)
-	os.Stderr.Write(bytes)
+func (l *Logx) output(level byte, content string) {
+	const calldepth = 2
+	_, file, line, ok := runtime.Caller(calldepth)
+	if !ok {
+		file = "???"
+		line = 0
+	}
+	short := file
+	for i := len(file) - 1; i > 0; i-- {
+		//@TODO differ by os type
+		if file[i] == '/' {
+			short = file[i+1:]
+			break
+		}
+	}
+	file = short
+	content = file + "," + strconv.Itoa(line) + ": " + content
+	var bytes []byte
+	if level == outputLevelDebug {
+		bytes = []byte(prefixDebug + content)
+		os.Stdout.Write(bytes)
+	}
+	if level == outputLevelWarn {
+		bytes = []byte(prefixWarn + content)
+		os.Stderr.Write(bytes)
+	}
+	if level == outputLevelError {
+		bytes = []byte(prefixError + content)
+		os.Stderr.Write(bytes)
+	}
+	if level == outputLevelFatal {
+		bytes = []byte(prefixFatal + content)
+	}
+	if l.toFile {
+		l.underFile.Write(bytes)
+	}
 }
 
 //@TODO use configuration
 //Debug
 func (l *Logx) Debug(format string, paramters ...interface{}) {
 	//@TODO benchmark convertion efficency
-	bytes := []byte(prefixDebug + fmt.Sprintf(format, paramters...))
-	os.Stdout.Write(bytes)
-	os.Stderr.Write(bytes)
+	l.output(outputLevelDebug, fmt.Sprintf(format, paramters...))
 }
 
-//@TODO use configuration
+//Debugln
+func (l *Logx) Debugln(format string, paramters ...interface{}) {
+	l.output(outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+}
+
 //Warning To File
 func (l *Logx) Warn(format string, paramters ...interface{}) {
-	bytes := []byte(prefixWarn + fmt.Sprintf(format+"\n", paramters...))
-	l.underFile.Write(bytes)
-	os.Stdout.Write(bytes)
-	os.Stderr.Write(bytes)
+	l.output(outputLevelWarn, fmt.Sprintf(format, paramters...))
+}
+
+func (l *Logx) Warnln(format string, paramters ...interface{}) {
+	l.output(outputLevelWarn, fmt.Sprintf(format+"\n", paramters...))
+}
+
+//Warning To File
+func (l *Logx) Fatal(format string, paramters ...interface{}) {
+	l.output(outputLevelFatal, fmt.Sprintf(format, paramters...))
+	os.Exit(1)
+}
+
+func (l *Logx) Fatalln(format string, paramters ...interface{}) {
+	l.output(outputLevelFatal, fmt.Sprintf(format+"\n", paramters...))
+	os.Exit(1)
+}
+
+func (l *Logx) Error(format string, paramters ...interface{}) {
+	l.output(outputLevelError, fmt.Sprintf(format, paramters...))
+}
+
+func (l *Logx) Errorln(format string, paramters ...interface{}) {
+	l.output(outputLevelError, fmt.Sprintf(format+"\n", paramters...))
 }
 
 func (l *Logx) GracefullyExit() {
@@ -58,9 +111,15 @@ func NewLogxFile() *Logx {
 }
 
 func newLogx(fd *os.File) *Logx {
+	if fd == nil {
+		return &Logx{
+			underFile: nil,
+			toFile:    false,
+		}
+	}
 	return &Logx{
-		underFile:       fd,
-		outputDirection: outputLevelDebug,
+		underFile: fd,
+		toFile:    true,
 	}
 }
 

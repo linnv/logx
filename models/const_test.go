@@ -2,21 +2,17 @@ package models
 
 import "testing"
 
-func TestConst(t *testing.T) {
-	type args struct {
-		n byte
-	}
+func TestGetEnvs(t *testing.T) {
 	tests := []struct {
 		name string
-		args args
 		want string
 	}{
-		{"normal", args{byte(0x01)}, outputDirection[outputDirectionDebug]},
+	// {"normal", "/Users/Jialin/golang"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Const(tt.args.n); got != tt.want {
-				t.Errorf("Const() = %v, want %v", got, tt.want)
+			if got := GetEnvs(); got != tt.want {
+				t.Errorf("GetEnvs() = %v, want %v", got, tt.want)
 			}
 		})
 	}
