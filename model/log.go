@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"os"
+	"path"
 	"runtime"
 	"strconv"
 	"time"
@@ -127,26 +128,44 @@ func (l *Logx) GracefullyExit() {
 
 func NewLogxFile() *Logx {
 	filepath := "/Users/Jialin/myGit/OpenDemo/golang/main/logx/model/t.log"
+	_, err := os.Stat(filepath)
+	if err == nil {
+	} else if os.IsNotExist(err) {
+		err = os.MkdirAll(path.Dir(filepath), 0766)
+		if err != nil {
+			panic(err.Error())
+		}
+	} else if os.IsPermission(err) {
+		err = os.Chmod(path.Dir(filepath), 0755)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+newFile:
 	fd, err := os.OpenFile(filepath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
-		//@TODO
-		panic(err.Error())
+		if os.IsPermission(err) {
+			err = os.Chmod(filepath, 0666)
+			if err != nil {
+				panic(err.Error())
+			}
+			goto newFile
+		}
+		panic("unknow error")
 	}
 
 	return newLogx(fd)
 }
 
-func newLogx(fd *os.File) *Logx {
+func newLogx(fd *os.File) (l *Logx) {
+	l = new(Logx)
 	if fd == nil {
-		return &Logx{
-			underFile: nil,
-			toFile:    false,
-		}
+		return
 	}
-	return &Logx{
-		underFile: fd,
-		toFile:    true,
-	}
+	l.underFile = fd
+	l.toFile = true
+	return
 }
 
 func NewLogx() *Logx {
