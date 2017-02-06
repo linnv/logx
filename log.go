@@ -53,15 +53,15 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	//@TODO optimize
 	content = prefix[level] + string(*buf) + " " + file + " " + strconv.Itoa(line) + ": " + content
 	bytes := []byte(content)
-	if level == outputLevelDebug {
-		os.Stdout.Write(bytes)
-	}
-	//other level of output to stderr
-	os.Stderr.Write(bytes)
 	if l.toFile {
 		l.underFile.Write(bytes)
 	}
-
+	if level == outputLevelDebug {
+		os.Stdout.Write(bytes)
+		return
+	}
+	//other level of output to stderr
+	os.Stderr.Write(bytes)
 }
 
 //@TODO use configuration

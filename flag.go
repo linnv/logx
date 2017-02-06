@@ -1,4 +1,3 @@
-// Package  provides ...
 package logx
 
 import "flag"
