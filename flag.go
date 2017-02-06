@@ -1,5 +1,5 @@
 // Package  provides ...
-package model
+package logx
 
 import "flag"
 
