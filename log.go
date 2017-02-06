@@ -74,16 +74,6 @@ func (l *Logx) Debugln(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
 }
 
-//default log is wrapped by one more function,so calldepth plus one
-func (l *Logx) Debugx(format string, paramters ...interface{}) {
-	//@TODO benchmark convertion efficency
-	l.output(calldepth+1, outputLevelDebug, fmt.Sprintf(format, paramters...))
-}
-
-func (l *Logx) Debugxln(format string, paramters ...interface{}) {
-	l.output(calldepth+1, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
-}
-
 func (l *Logx) Warn(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format, paramters...))
 }
@@ -92,7 +82,6 @@ func (l *Logx) Warnln(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format+"\n", paramters...))
 }
 
-//Warning To File
 func (l *Logx) Fatal(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelFatal, fmt.Sprintf(format, paramters...))
 	l.GracefullyExit()
@@ -105,13 +94,6 @@ func (l *Logx) Fatalln(format string, paramters ...interface{}) {
 	os.Exit(1)
 }
 
-func (l *Logx) Errorx(format string, paramters ...interface{}) {
-	l.output(calldepth+1, outputLevelError, fmt.Sprintf(format, paramters...))
-}
-
-func (l *Logx) Errorxln(format string, paramters ...interface{}) {
-	l.output(calldepth+1, outputLevelError, fmt.Sprintf(format+"\n", paramters...))
-}
 func (l *Logx) Error(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelError, fmt.Sprintf(format, paramters...))
 }
@@ -127,11 +109,13 @@ func (l *Logx) GracefullyExit() {
 }
 
 func (l *Logx) LogConfigure() {
+	println("to file:", l.toFile)
+	println("under file:", l.underFile.Name())
 	//@TODO show entity inof if Logx
 }
 
 func NewLogxFile() *Logx {
-	filepath := GetFlags()
+	filepath, _ := GetFlags()
 	if len(filepath) < 1 {
 		return newLogx(nil)
 	}
