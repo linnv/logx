@@ -1,4 +1,4 @@
-package models
+package model
 
 //default logger
 var Log = NewLogx()

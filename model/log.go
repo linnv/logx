@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"fmt"
@@ -126,7 +126,7 @@ func (l *Logx) GracefullyExit() {
 }
 
 func NewLogxFile() *Logx {
-	filepath := "/Users/Jialin/myGit/OpenDemo/golang/main/logx/models/t.log"
+	filepath := "/Users/Jialin/myGit/OpenDemo/golang/main/logx/model/t.log"
 	fd, err := os.OpenFile(filepath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		//@TODO
