@@ -25,7 +25,7 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	short := file
 	for i := len(file) - 1; i > 0; i-- {
 		//@TODO differ by os type
-		if file[i] == '/' {
+		if os.IsPathSeparator(file[i]) {
 			short = file[i+1:]
 			break
 		}
@@ -37,9 +37,9 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	t := time.Now()
 	year, month, day := t.Date()
 	itoa(buf, year, 4)
-	*buf = append(*buf, '/')
+	*buf = append(*buf, os.PathSeparator)
 	itoa(buf, int(month), 2)
-	*buf = append(*buf, '/')
+	*buf = append(*buf, os.PathSeparator)
 	itoa(buf, day, 2)
 	*buf = append(*buf, ' ')
 
@@ -126,8 +126,18 @@ func (l *Logx) GracefullyExit() {
 	}
 }
 
+func (l *Logx) LogConfigure() {
+	//@TODO show entity inof if Logx
+}
+
 func NewLogxFile() *Logx {
-	filepath := "/Users/Jialin/myGit/OpenDemo/golang/main/logx/model/t.log"
+	filepath := GetFlags()
+	if len(filepath) < 1 {
+		return newLogx(nil)
+	}
+	if !os.IsPathSeparator(filepath[0]) {
+		return newLogx(nil)
+	}
 	_, err := os.Stat(filepath)
 	if err == nil {
 	} else if os.IsNotExist(err) {
