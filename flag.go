@@ -7,8 +7,8 @@ import (
 
 var initFlag bool
 
-//InitFlags provides configure parameters of logx by args, you should call this functions after all of other flags have been defined
-func InitFlags() {
+//Init provides configure parameters of logx by args, you should call this functions after all of other flags have been defined
+func Init() {
 	flag.String("logxfile", "", "absolut path of file,if empty no log will go into file")
 	flag.Bool("defaultLogToFile", false, "flush to file in default mode eighter")
 	initFlag = true
