@@ -39,5 +39,12 @@ func Debugln(format string, paramters ...interface{}) {
 func Debug(format string, paramters ...interface{}) {
 	//@TODO benchmark convertion efficency
 	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
+}
+
+func LogConfigure() {
 	Log.LogConfigure()
+}
+
+func Sync() {
+	Log.Sync()
 }

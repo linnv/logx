@@ -1,6 +1,9 @@
 package logx
 
-import "os"
+import (
+	"errors"
+	"os"
+)
 
 const calldepth = 2
 
@@ -11,12 +14,15 @@ const (
 	outputLevelFatal
 )
 
-var prefix = [...]string{
-	outputLevelDebug: "[debug]",
-	outputLevelWarn:  "[warn]",
-	outputLevelError: "[error]",
-	outputLevelFatal: "[fatal]",
+var prefix = [...][]byte{
+	outputLevelDebug: []byte("[debug]"),
+	outputLevelWarn:  []byte("[warn]"),
+	outputLevelError: []byte("[error]"),
+	outputLevelFatal: []byte("[fatal]"),
 }
+
+const maxDefaultBufferSize = 1 << 20 //1MB
+var ErrTooLarge = errors.New("too large slice to allocate")
 
 var gopath string
 

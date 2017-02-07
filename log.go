@@ -9,11 +9,27 @@ import (
 	"time"
 )
 
+//Logx  contains under field for log entity
+// maxBuffer: bytes,maximun size of buffer for one sync
 type Logx struct {
-	underFile *os.File
-	toFile    bool
-	// maxBuffer       int //@TODO bytes,maximun size of buffer to output at least
-	// buf             []byte
+	underFile    *os.File
+	toFile       bool
+	maxBuffer    int //bytes,maximun size of buffer for one sync
+	currentIndex int
+	buf          []byte
+}
+
+func (l *Logx) resetbuf() {
+	l.currentIndex = 0
+}
+
+func (l *Logx) availableCount() int {
+	return l.maxBuffer - l.currentIndex
+}
+
+func (l *Logx) Sync() {
+	l.underFile.Write(l.buf[:l.currentIndex])
+	l.underFile.Sync()
 }
 
 func (l *Logx) output(calldepth int, level byte, content string) {
@@ -24,7 +40,6 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	}
 	short := file
 	for i := len(file) - 1; i > 0; i-- {
-		//@TODO differ by os type
 		if os.IsPathSeparator(file[i]) {
 			short = file[i+1:]
 			break
@@ -32,7 +47,11 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	}
 	file = short
 
-	bs := make([]byte, 0, 30)
+	excludeLen := len(content) + len(file) + len(prefix[level]) + 36
+	//30 for datatime, 5 for separetor
+	bs := make([]byte, 0, excludeLen)
+	bs = append(bs, prefix[level]...)
+	bs = append(bs, ' ')
 	buf := &bs
 	t := time.Now()
 	year, month, day := t.Date()
@@ -50,18 +69,36 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	*buf = append(*buf, ':')
 	itoa(buf, sec, 2)
 
+	bs = append(bs, ' ')
+	bs = append(bs, file...)
+	bs = append(bs, ' ')
+	//@TODO  optimize
+	bs = append(bs, strconv.Itoa(line)...)
+	bs = append(bs, ':')
+	bs = append(bs, content...)
+
 	//@TODO optimize
-	content = prefix[level] + string(*buf) + " " + file + " " + strconv.Itoa(line) + ": " + content
-	bytes := []byte(content)
 	if l.toFile {
-		l.underFile.Write(bytes)
+		bytesLen := len(bs)
+		if bytesLen > l.availableCount() {
+			l.Sync()
+			l.resetbuf()
+			if bytesLen >= l.maxBuffer {
+				bytesLen = l.maxBuffer
+			}
+		}
+
+		for i, bi := l.currentIndex, 0; bi < bytesLen; i, bi = i+1, bi+1 {
+			l.buf[i] = bs[bi]
+		}
+		l.currentIndex += bytesLen
 	}
 	if level == outputLevelDebug {
-		os.Stdout.Write(bytes)
+		os.Stdout.Write(bs)
 		return
 	}
 	//other level of output to stderr
-	os.Stderr.Write(bytes)
+	os.Stderr.Write(bs)
 }
 
 //@TODO use configuration
@@ -104,6 +141,7 @@ func (l *Logx) Errorln(format string, paramters ...interface{}) {
 
 func (l *Logx) GracefullyExit() {
 	if l.underFile != nil {
+		l.Sync()
 		l.underFile.Close()
 	}
 }
@@ -111,7 +149,8 @@ func (l *Logx) GracefullyExit() {
 func (l *Logx) LogConfigure() {
 	println("to file:", l.toFile)
 	println("under file:", l.underFile.Name())
-	//@TODO show entity inof if Logx
+	println("max buffer:", l.maxBuffer)
+	println("current index:", l.currentIndex)
 }
 
 func NewLogxFile() *Logx {
@@ -159,6 +198,16 @@ func newLogx(fd *os.File) (l *Logx) {
 	}
 	l.underFile = fd
 	l.toFile = true
+	l.maxBuffer = maxDefaultBufferSize
+	f := func(n int) []byte {
+		defer func() {
+			if recover() != nil {
+				panic(ErrTooLarge)
+			}
+		}()
+		return make([]byte, n)
+	}
+	l.buf = f(l.maxBuffer)
 	return
 }
 
