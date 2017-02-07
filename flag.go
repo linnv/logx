@@ -3,16 +3,42 @@ package logx
 import (
 	"flag"
 	"strings"
+	"sync"
 )
 
 var initFlag bool
 
+var once sync.Once
+
 //Init provides configure parameters of logx by args, you should call this functions after all of other flags have been defined
-func Init() {
+func init() {
 	flag.String("logxfile", "", "absolut path of file,if empty no log will go into file")
 	flag.Bool("defaultLogToFile", false, "flush to file in default mode eighter")
-	initFlag = true
 	initDefaultLog()
+}
+
+//@TODO
+func LoadLogConf(conf []byte) {
+}
+
+func InitAndParsed() {
+	initFlag = true
+	initDefaultLogFromFlag()
+}
+
+func initDefaultLogFromFlag() {
+	_, mode := GetFlags()
+	if mode {
+		Log = NewLogxFile()
+	} else {
+		Log = NewLogx()
+	}
+	return
+}
+
+func initDefaultLog() {
+	once.Do(initDefaultLogFromFlag)
+	return
 }
 
 func GetFlags() (string, bool) {

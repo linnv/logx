@@ -1,28 +1,9 @@
 package logx
 
-import (
-	"fmt"
-	"sync"
-)
+import "fmt"
 
 //default logger
 var Log *Logx
-
-var once sync.Once
-
-func initDefaultLog() {
-	f := func() {
-		_, mode := GetFlags()
-		if mode {
-			Log = NewLogxFile()
-		} else {
-			Log = NewLogx()
-		}
-		return
-	}
-	once.Do(f)
-	return
-}
 
 func Errorln(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", paramters...))
