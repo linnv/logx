@@ -79,6 +79,12 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 
 	//@TODO optimize
 	if l.toFile {
+		if jsonConfig != nil {
+			if jsonConfig.DisableBuffer {
+				l.underFile.Write(bs)
+			}
+		}
+
 		bytesLen := len(bs)
 		if bytesLen > l.availableCount() {
 			l.Sync()
@@ -159,6 +165,11 @@ func newLogxFile() *Logx {
 		return newLogx(nil)
 	}
 
+	if jsonConfig != nil {
+		if len(jsonConfig.FilePath) > 1 && os.IsPathSeparator(jsonConfig.FilePath[0]) {
+			filepath = jsonConfig.FilePath
+		}
+	}
 	_, err := os.Stat(filepath)
 	if err == nil {
 	} else if os.IsNotExist(err) {

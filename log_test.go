@@ -56,7 +56,7 @@ func TestLogx_Warn(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := NewLogxFile()
+			l := NewLogx()
 			// l.Warn(tt.args.format, tt.args.paramters...)
 			// l.Fatalln(tt.args.format, tt.args.paramters...)
 			l.Errorln(tt.args.format, tt.args.paramters...)
