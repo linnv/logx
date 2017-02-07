@@ -14,7 +14,7 @@ var once sync.Once
 func init() {
 	flag.String("logxfile", "", "absolut path of file,if empty no log will go into file")
 	flag.Bool("defaultLogToFile", false, "flush to file in default mode eighter")
-	initDefaultLog()
+	once.Do(initDefaultLog)
 }
 
 //@TODO
@@ -23,22 +23,15 @@ func LoadLogConf(conf []byte) {
 
 func InitAndParsed() {
 	initFlag = true
-	initDefaultLogFromFlag()
-}
-
-func initDefaultLogFromFlag() {
-	_, mode := GetFlags()
-	if mode {
-		Log = NewLogxFile()
-	} else {
-		Log = NewLogx()
-	}
-	return
+	initDefaultLog()
 }
 
 func initDefaultLog() {
-	once.Do(initDefaultLogFromFlag)
-	return
+	if _, mode := GetFlags(); mode {
+		Log = NewLogxFile()
+		return
+	}
+	Log = NewLogx()
 }
 
 func GetFlags() (string, bool) {
