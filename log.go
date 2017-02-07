@@ -47,8 +47,8 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	}
 	file = short
 
-	excludeLen := len(content) + len(file) + len(prefix[level]) + 36
 	//30 for datatime, 5 for separetor
+	excludeLen := len(content) + len(file) + len(prefix[level]) + 35
 	bs := make([]byte, 0, excludeLen)
 	bs = append(bs, prefix[level]...)
 	bs = append(bs, ' ')
@@ -153,14 +153,12 @@ func (l *Logx) LogConfigure() {
 	println("current index:", l.currentIndex)
 }
 
-func NewLogxFile() *Logx {
-	filepath, _ := GetFlags()
-	if len(filepath) < 1 {
+func newLogxFile() *Logx {
+	filepath := GetFlags().FilePath
+	if len(filepath) < 1 || !os.IsPathSeparator(filepath[0]) {
 		return newLogx(nil)
 	}
-	if !os.IsPathSeparator(filepath[0]) {
-		return newLogx(nil)
-	}
+
 	_, err := os.Stat(filepath)
 	if err == nil {
 	} else if os.IsNotExist(err) {
@@ -212,7 +210,7 @@ func newLogx(fd *os.File) (l *Logx) {
 }
 
 func NewLogx() *Logx {
-	return newLogx(nil)
+	return newLogxFile()
 }
 
 // Cheap integer to fixed-width decimal ASCII.  Give a negative width to avoid zero-padding.

@@ -2,7 +2,6 @@ package logx
 
 import (
 	"flag"
-	"strings"
 	"sync"
 )
 
@@ -17,46 +16,33 @@ func init() {
 	once.Do(initDefaultLog)
 }
 
-//@TODO
-func LoadLogConf(conf []byte) {
-}
-
 func InitAndParsed() {
 	initFlag = true
 	initDefaultLog()
 }
 
 func initDefaultLog() {
-	if _, mode := GetFlags(); mode {
-		Log = NewLogxFile()
-		return
-	}
 	Log = NewLogx()
 }
 
-func GetFlags() (string, bool) {
+type ConfigByFlag struct {
+	FilePath string
+}
+
+func GetFlags() ConfigByFlag {
 	if !initFlag {
-		return "", false
+		return ConfigByFlag{}
 	}
+
 	if flag.Parsed() {
-		var file string
-		var toFileInDebugMode bool
+		var config ConfigByFlag
 		fileVisitor := func(f *flag.Flag) {
 			if f.Name == "logxfile" {
-				file = f.Value.String()
-			}
-		}
-		modeVisitor := func(f *flag.Flag) {
-			if f.Name == "defaultLogToFile" {
-				s := f.Value.String()
-				if strings.ToUpper(s) == "TRUE" {
-					toFileInDebugMode = true
-				}
+				config.FilePath = f.Value.String()
 			}
 		}
 		flag.Visit(fileVisitor)
-		flag.Visit(modeVisitor)
-		return file, toFileInDebugMode
+		return config
 
 	}
 	flag.Parse()
