@@ -12,7 +12,6 @@ var once sync.Once
 //Init provides configure parameters of logx by args, you should call this functions after all of other flags have been defined
 func init() {
 	flag.String("logxfile", "", "absolut path of file,if empty no log will go into file")
-	flag.Bool("defaultLogToFile", false, "flush to file in default mode eighter")
 	once.Do(initDefaultLog)
 }
 
