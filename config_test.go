@@ -10,6 +10,7 @@ func TestLoadConfJson(t *testing.T) {
 		  "DisableBuffer": false,
 		  "Maxbuffer": "3MB",
 		  "ToDifferentFile": true,
+		  "DevMode": true,
 		  "FilePath": "/Users/Jialin/golang/src/github.com/linnv"
 		}`
 	r := &LogxConfig{
@@ -17,6 +18,7 @@ func TestLoadConfJson(t *testing.T) {
 		MaxbufferInt:    2 * (1 << 20), //maxbuffer
 		DisableBuffer:   false,
 		ToDifferentFile: true,
+		DevMode:         true,
 		FilePath:        "/Users/Jialin/golang/src/github.com/linnv",
 	}
 	const bsTwo = `{
@@ -30,6 +32,7 @@ func TestLoadConfJson(t *testing.T) {
 		MaxbufferInt:    1 << 20, //maxbuffer
 		DisableBuffer:   false,
 		ToDifferentFile: true,
+		DevMode:         true,
 		FilePath:        "/Users/Jialin/golang/src/github.com/linnv",
 	}
 	type args struct {
