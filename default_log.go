@@ -22,6 +22,10 @@ func Debug(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
 }
 
+func EnableDevMode(enabled bool) {
+	Log.EnableDevMode(enabled)
+}
+
 func LogConfigure() {
 	Log.LogConfigure()
 }

@@ -14,6 +14,7 @@ import (
 type Logx struct {
 	underFile    *os.File
 	toFile       bool
+	DevMode      bool
 	maxBuffer    int //bytes,maximun size of buffer for one sync
 	currentIndex int
 	buf          []byte
@@ -33,6 +34,10 @@ func (l *Logx) Sync() {
 }
 
 func (l *Logx) output(calldepth int, level byte, content string) {
+	if level == outputLevelDebug && !l.DevMode {
+		return
+	}
+
 	_, file, line, ok := runtime.Caller(calldepth)
 	if !ok {
 		file = "???"
@@ -72,7 +77,7 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	bs = append(bs, ' ')
 	bs = append(bs, file...)
 	bs = append(bs, ' ')
-	//@TODO  optimize
+
 	bs = append(bs, strconv.Itoa(line)...)
 	bs = append(bs, ':')
 	bs = append(bs, content...)
@@ -107,7 +112,14 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	os.Stderr.Write(bs)
 }
 
-//@TODO use configuration
+func (l *Logx) EnableDevMode(enabled bool) {
+	if enabled {
+		l.DevMode = true
+		return
+	}
+	l.DevMode = false
+}
+
 func (l *Logx) Debug(format string, paramters ...interface{}) {
 	//@TODO benchmark convertion efficency
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
@@ -154,13 +166,19 @@ func (l *Logx) GracefullyExit() {
 
 func (l *Logx) LogConfigure() {
 	println("to file:", l.toFile)
-	println("under file:", l.underFile.Name())
+	println("dev mode:", l.DevMode)
+	if l.underFile != nil {
+		println("under file:", l.underFile.Name())
+	} else {
+		println("file no provied")
+	}
 	println("max buffer:", l.maxBuffer)
 	println("current index:", l.currentIndex)
 }
 
-func newLogxFile() *Logx {
-	filepath := GetFlags().FilePath
+func newLogxFile() (newLog *Logx) {
+	flags := GetFlags()
+	filepath := flags.FilePath
 	if len(filepath) < 1 || !os.IsPathSeparator(filepath[0]) {
 		return newLogx(nil)
 	}
@@ -197,7 +215,12 @@ newFile:
 		panic("unknow error")
 	}
 
-	return newLogx(fd)
+	newLog = newLogx(fd)
+	newLog.DevMode = flags.DevMode
+	if jsonConfig != nil {
+		newLog.DevMode = jsonConfig.DevMode
+	}
+	return
 }
 
 func newLogx(fd *os.File) (l *Logx) {

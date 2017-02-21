@@ -8,6 +8,7 @@ import (
 
 type LogxConfig struct {
 	FilePath        string
+	DevMode         bool //if true all log of debug level will be outputted or will be ignored,the default value is true
 	ToDifferentFile bool
 
 	Maxbuffer     string
@@ -17,8 +18,10 @@ type LogxConfig struct {
 
 var jsonConfig *LogxConfig
 
+//priority of configure from file is higher than flags
 func LoadConfJson(conf []byte) *LogxConfig {
 	jsonConfig = new(LogxConfig)
+	jsonConfig.DevMode = true
 	err := json.Unmarshal(conf, &jsonConfig)
 	if err != nil {
 		panic(err.Error())
