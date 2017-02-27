@@ -179,15 +179,13 @@ func (l *Logx) LogConfigure() {
 func newLogxFile() (newLog *Logx) {
 	flags := GetFlags()
 	filepath := flags.FilePath
+	if jsonConfig != nil {
+		filepath = jsonConfig.FilePath
+	}
 	if len(filepath) < 1 || !os.IsPathSeparator(filepath[0]) {
 		return newLogx(nil)
 	}
 
-	if jsonConfig != nil {
-		if len(jsonConfig.FilePath) > 1 && os.IsPathSeparator(jsonConfig.FilePath[0]) {
-			filepath = jsonConfig.FilePath
-		}
-	}
 	_, err := os.Stat(filepath)
 	if err == nil {
 	} else if os.IsNotExist(err) {
@@ -215,16 +213,18 @@ newFile:
 		panic("unknow error")
 	}
 
-	newLog = newLogx(fd)
-	newLog.DevMode = flags.DevMode
-	if jsonConfig != nil {
-		newLog.DevMode = jsonConfig.DevMode
-	}
-	return
+	return newLogx(fd)
 }
 
 func newLogx(fd *os.File) (l *Logx) {
+	//@TODO repeative code dirty
 	l = new(Logx)
+	flags := GetFlags()
+	l.DevMode = flags.DevMode
+	if jsonConfig != nil {
+		l.DevMode = jsonConfig.DevMode
+	}
+
 	if fd == nil {
 		return
 	}
