@@ -5,6 +5,10 @@ import "fmt"
 //default logger
 var Log *Logx
 
+func DisableBuffer(disable bool) {
+	Log.DisableBuffer(disable)
+}
+
 func Errorln(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", paramters...))
 }

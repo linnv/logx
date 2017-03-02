@@ -12,12 +12,13 @@ import (
 //Logx  contains under field for log entity
 // maxBuffer: bytes,maximun size of buffer for one sync
 type Logx struct {
-	underFile    *os.File
-	toFile       bool
-	DevMode      bool
-	maxBuffer    int //bytes,maximun size of buffer for one sync
-	currentIndex int
-	buf          []byte
+	underFile     *os.File
+	toFile        bool
+	DevMode       bool
+	maxBuffer     int //bytes,maximun size of buffer for one sync
+	disableBuffer bool
+	currentIndex  int
+	buf           []byte
 }
 
 func (l *Logx) resetbuf() {
@@ -26,6 +27,14 @@ func (l *Logx) resetbuf() {
 
 func (l *Logx) availableCount() int {
 	return l.maxBuffer - l.currentIndex
+}
+
+func (l *Logx) DisableBuffer(disable bool) {
+	if disable {
+		l.disableBuffer = true
+		return
+	}
+	l.disableBuffer = false
 }
 
 func (l *Logx) Sync() {
@@ -84,10 +93,8 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 
 	//@TODO optimize
 	if l.toFile {
-		if jsonConfig != nil {
-			if jsonConfig.DisableBuffer {
-				l.underFile.Write(bs)
-			}
+		if l.disableBuffer {
+			l.underFile.Write(bs)
 		}
 
 		bytesLen := len(bs)
@@ -169,6 +176,7 @@ func (l *Logx) LogConfigure() {
 	println("dev mode:", l.DevMode)
 	if l.underFile != nil {
 		println("under file:", l.underFile.Name())
+		println("DisableBuffer:", l.disableBuffer)
 	} else {
 		println("file no provied")
 	}
@@ -176,30 +184,42 @@ func (l *Logx) LogConfigure() {
 	println("current index:", l.currentIndex)
 }
 
-func newLogxFile() (newLog *Logx) {
-	flags := GetFlags()
-	filepath := flags.FilePath
-	if jsonConfig != nil {
-		filepath = jsonConfig.FilePath
-	}
-	if len(filepath) < 1 || !os.IsPathSeparator(filepath[0]) {
-		return newLogx(nil)
-	}
-
+func checkDirAvailable(filepath string) error {
 	_, err := os.Stat(filepath)
 	if err == nil {
 	} else if os.IsNotExist(err) {
 		err = os.MkdirAll(path.Dir(filepath), 0766)
 		if err != nil {
-			panic(err.Error())
+			return err
 		}
 	} else if os.IsPermission(err) {
 		err = os.Chmod(path.Dir(filepath), 0755)
 		if err != nil {
-			panic(err.Error())
+			return err
 		}
 	}
+	return nil
+}
 
+func newLogxFile() (newLog *Logx) {
+	flags := GetFlags()
+	l := &Logx{
+		DevMode: flags.DevMode,
+	}
+	filepath := flags.FilePath
+	if jsonConfig != nil {
+		filepath = jsonConfig.FilePath
+		l.DevMode = jsonConfig.DevMode
+		l.disableBuffer = jsonConfig.DisableBuffer
+		l.maxBuffer = jsonConfig.MaxbufferInt
+	}
+	if len(filepath) < 1 || !os.IsPathSeparator(filepath[0]) {
+		return l
+	}
+
+	if err := checkDirAvailable(filepath); err != nil {
+		panic(err.Error())
+	}
 newFile:
 	fd, err := os.OpenFile(filepath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
@@ -210,28 +230,21 @@ newFile:
 			}
 			goto newFile
 		}
-		panic("unknow error")
+		panic(err.Error())
 	}
 
-	return newLogx(fd)
+	newLogx(fd, l)
+	return l
 }
 
-func newLogx(fd *os.File) (l *Logx) {
-	//@TODO repeative code dirty
-	l = new(Logx)
-	flags := GetFlags()
-	l.DevMode = flags.DevMode
-	if jsonConfig != nil {
-		l.DevMode = jsonConfig.DevMode
-	}
-
-	if fd == nil {
+func newLogx(fd *os.File, l *Logx) {
+	if fd == nil || l == nil {
 		return
 	}
+
 	l.underFile = fd
 	l.toFile = true
-	l.maxBuffer = maxDefaultBufferSize
-	f := func(n int) []byte {
+	newSliceByte := func(n int) []byte {
 		defer func() {
 			if recover() != nil {
 				panic(ErrTooLarge)
@@ -239,7 +252,7 @@ func newLogx(fd *os.File) (l *Logx) {
 		}()
 		return make([]byte, n)
 	}
-	l.buf = f(l.maxBuffer)
+	l.buf = newSliceByte(l.maxBuffer)
 	return
 }
 
