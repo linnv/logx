@@ -115,7 +115,7 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 		os.Stdout.Write(bs)
 		return
 	}
-	//other level of output to stderr
+	//other level of log output to stderr
 	os.Stderr.Write(bs)
 }
 
@@ -184,6 +184,21 @@ func (l *Logx) LogConfigure() {
 	println("current index:", l.currentIndex)
 }
 
+func checkFileAvailable(filepath string) (*os.File, error) {
+	fd, err := os.OpenFile(filepath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	if err != nil {
+		if os.IsPermission(err) {
+			err = os.Chmod(filepath, 0666)
+			if err != nil {
+				return nil, err
+			}
+			return checkFileAvailable(filepath)
+		}
+		return nil, err
+	}
+	return fd, nil
+}
+
 func checkDirAvailable(filepath string) error {
 	_, err := os.Stat(filepath)
 	if err == nil {
@@ -220,20 +235,11 @@ func newLogxFile() (newLog *Logx) {
 	if err := checkDirAvailable(filepath); err != nil {
 		panic(err.Error())
 	}
-newFile:
-	fd, err := os.OpenFile(filepath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	if err != nil {
-		if os.IsPermission(err) {
-			err = os.Chmod(filepath, 0666)
-			if err != nil {
-				panic(err.Error())
-			}
-			goto newFile
-		}
+	if fd, err := checkFileAvailable(filepath); err != nil {
 		panic(err.Error())
+	} else {
+		newLogx(fd, l)
 	}
-
-	newLogx(fd, l)
 	return l
 }
 
