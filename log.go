@@ -10,7 +10,6 @@ import (
 )
 
 //Logx  contains under field for log entity
-// maxBuffer: bytes,maximun size of buffer for one sync
 type Logx struct {
 	underFile     *os.File
 	toFile        bool
@@ -127,41 +126,41 @@ func (l *Logx) EnableDevMode(enabled bool) {
 	l.DevMode = false
 }
 
-func (l *Logx) Debug(format string, paramters ...interface{}) {
+func (l *Logx) Debugf(format string, paramters ...interface{}) {
 	//@TODO benchmark convertion efficency
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
 }
 
-func (l *Logx) Debugln(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+func (l *Logx) Debugln(paramters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintln(paramters...))
 }
 
-func (l *Logx) Warn(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format, paramters...))
+func (l *Logx) Warnf(paramters ...interface{}) {
+	l.output(calldepth, outputLevelWarn, fmt.Sprintln(paramters...))
 }
 
-func (l *Logx) Warnln(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format+"\n", paramters...))
+func (l *Logx) Warnln(paramters ...interface{}) {
+	l.output(calldepth, outputLevelWarn, fmt.Sprintln(paramters...))
 }
 
-func (l *Logx) Fatal(format string, paramters ...interface{}) {
+func (l *Logx) Fatalf(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelFatal, fmt.Sprintf(format, paramters...))
 	l.GracefullyExit()
 	os.Exit(1)
 }
 
-func (l *Logx) Fatalln(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelFatal, fmt.Sprintf(format+"\n", paramters...))
+func (l *Logx) Fatalln(paramters ...interface{}) {
+	l.output(calldepth, outputLevelFatal, fmt.Sprintln(paramters...))
 	l.GracefullyExit()
 	os.Exit(1)
 }
 
-func (l *Logx) Error(format string, paramters ...interface{}) {
+func (l *Logx) Errorf(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelError, fmt.Sprintf(format, paramters...))
 }
 
-func (l *Logx) Errorln(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", paramters...))
+func (l *Logx) Errorln(paramters ...interface{}) {
+	l.output(calldepth, outputLevelError, fmt.Sprintln(paramters...))
 }
 
 func (l *Logx) GracefullyExit() {

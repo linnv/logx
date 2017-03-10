@@ -9,19 +9,27 @@ func DisableBuffer(disable bool) {
 	Log.DisableBuffer(disable)
 }
 
-func Errorln(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", paramters...))
+func Fatalln(paramters ...interface{}) {
+	Log.output(calldepth, outputLevelFatal, fmt.Sprintln(paramters...))
 }
 
-func Error(format string, paramters ...interface{}) {
+func Fatalf(format string, paramters ...interface{}) {
+	Log.output(calldepth, outputLevelFatal, fmt.Sprintf(format, paramters...))
+}
+
+func Errorln(paramters ...interface{}) {
+	Log.output(calldepth, outputLevelError, fmt.Sprintln(paramters...))
+}
+
+func Errorf(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelError, fmt.Sprintf(format, paramters...))
 }
 
-func Debugln(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+func Debugln(paramters ...interface{}) {
+	Log.output(calldepth, outputLevelDebug, fmt.Sprintln(paramters...))
 }
 
-func Debug(format string, paramters ...interface{}) {
+func Debugf(format string, paramters ...interface{}) {
 	//@TODO benchmark convertion efficency
 	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
 }

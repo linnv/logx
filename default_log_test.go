@@ -15,7 +15,7 @@ func TestErrorln(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			Errorln(tt.args.format, tt.args.paramters...)
+			Errorf(tt.args.format, tt.args.paramters...)
 		})
 	}
 }

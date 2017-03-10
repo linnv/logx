@@ -29,7 +29,7 @@ func TestLogx_Debugln(t *testing.T) {
 				underFile: tt.fields.underFile,
 				toFile:    tt.fields.toFile,
 			}
-			l.Debugln(tt.args.format, tt.args.paramters...)
+			l.Debugf(tt.args.format, tt.args.paramters...)
 			//@TODO fill the boring and unskilled testcase
 			// l.Debug(tt.args.format, tt.args.paramters...)
 		})
@@ -59,7 +59,7 @@ func TestLogx_Warn(t *testing.T) {
 			l := NewLogx()
 			// l.Warn(tt.args.format, tt.args.paramters...)
 			// l.Fatalln(tt.args.format, tt.args.paramters...)
-			l.Errorln(tt.args.format, tt.args.paramters...)
+			l.Errorf(tt.args.format, tt.args.paramters...)
 			l.GracefullyExit()
 		})
 	}
