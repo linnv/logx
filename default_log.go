@@ -1,6 +1,9 @@
 package logx
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 //default logger
 var Log *Logx
@@ -11,10 +14,14 @@ func DisableBuffer(disable bool) {
 
 func Fatalln(paramters ...interface{}) {
 	Log.output(calldepth, outputLevelFatal, fmt.Sprintln(paramters...))
+	Log.GracefullyExit()
+	os.Exit(1)
 }
 
 func Fatalf(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelFatal, fmt.Sprintf(format, paramters...))
+	Log.GracefullyExit()
+	os.Exit(1)
 }
 
 func Errorln(paramters ...interface{}) {
