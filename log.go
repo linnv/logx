@@ -13,8 +13,8 @@ import (
 type Logx struct {
 	underFile     *os.File
 	toFile        bool
-	DevMode       bool
-	maxBuffer     int //bytes,maximun size of buffer for one sync
+	DevMode       bool //if true, all debug level info will be ignored
+	maxBuffer     int  //bytes,maximun size of buffer for one sync
 	disableBuffer bool
 	currentIndex  int
 	buf           []byte

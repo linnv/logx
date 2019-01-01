@@ -13,23 +13,23 @@ func DisableBuffer(disable bool) {
 }
 
 func Fatalln(paramters ...interface{}) {
-	Log.output(calldepth, outputLevelFatal, fmt.Sprintln(paramters...))
+	Log.output(calldepth, outputLevelFatal, logRed(fmt.Sprintln(paramters...)))
 	Log.GracefullyExit()
 	os.Exit(1)
 }
 
 func Fatalf(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelFatal, fmt.Sprintf(format, paramters...))
+	Log.output(calldepth, outputLevelFatal, logRed(fmt.Sprintf(format, paramters...)))
 	Log.GracefullyExit()
 	os.Exit(1)
 }
 
 func Errorln(paramters ...interface{}) {
-	Log.output(calldepth, outputLevelError, fmt.Sprintln(paramters...))
+	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintln(paramters...)))
 }
 
 func Errorf(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelError, fmt.Sprintf(format, paramters...))
+	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format, paramters...)))
 }
 
 func Debugln(paramters ...interface{}) {
@@ -39,6 +39,15 @@ func Debugln(paramters ...interface{}) {
 func Debugf(format string, paramters ...interface{}) {
 	//@TODO benchmark convertion efficency
 	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
+}
+
+func Warnln(paramters ...interface{}) {
+	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintln(paramters...)))
+}
+
+func Warnf(format string, paramters ...interface{}) {
+	//@TODO benchmark convertion efficency
+	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintf(format, paramters...)))
 }
 
 func EnableDevMode(enabled bool) {
