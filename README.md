@@ -1,4 +1,4 @@
-### An elegant log right in hand
+### An elegant log for dev right in hand
 
 By default, logx will output log to stdout or stderr, if you want make log output to file,there are two way you can configure logx
 
