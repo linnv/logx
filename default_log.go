@@ -41,6 +41,10 @@ func Debugf(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
 }
 
+func Debugfln(format string, paramters ...interface{}) {
+	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+}
+
 func Warnln(paramters ...interface{}) {
 	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintln(paramters...)))
 }
@@ -48,6 +52,10 @@ func Warnln(paramters ...interface{}) {
 func Warnf(format string, paramters ...interface{}) {
 	//@TODO benchmark convertion efficency
 	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintf(format, paramters...)))
+}
+
+func Warnfln(format string, paramters ...interface{}) {
+	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintf(format+"\n", paramters...)))
 }
 
 func EnableDevMode(enabled bool) {
