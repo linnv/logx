@@ -32,30 +32,29 @@ func Errorf(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format, paramters...)))
 }
 
-func Debugln(paramters ...interface{}) {
-	Log.output(calldepth, outputLevelDebug, fmt.Sprintln(paramters...))
+func Debugln(parameters ...interface{}) {
+	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintln(parameters...)))
 }
 
-func Debugf(format string, paramters ...interface{}) {
-	//@TODO benchmark convertion efficency
-	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
+func Debugfln(format string, parameters ...interface{}) {
+	//@TODO benchmark conversion efficiency
+	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format+"\n", parameters...)))
 }
 
-func Debugfln(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+func Debugf(format string, parameters ...interface{}) {
+	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format, parameters...)))
 }
 
-func Warnln(paramters ...interface{}) {
-	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintln(paramters...)))
+func Warnln(parameters ...interface{}) {
+	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintln(parameters...)))
 }
 
-func Warnf(format string, paramters ...interface{}) {
-	//@TODO benchmark convertion efficency
-	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintf(format, paramters...)))
+func Warnfln(format string, parameters ...interface{}) {
+	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintf(format+"\n", parameters...)))
 }
 
-func Warnfln(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintf(format+"\n", paramters...)))
+func Warnf(format string, parameters ...interface{}) {
+	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintf(format, parameters...)))
 }
 
 func EnableDevMode(enabled bool) {
