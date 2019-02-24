@@ -2,13 +2,15 @@ package logx
 
 import (
 	"encoding/json"
+	"log"
 	"strconv"
 	"strings"
 )
 
 type LogxConfig struct {
-	FilePath        string
-	DevMode         bool //if true all log of debug level will be outputted or will be ignored,the default value is true
+	FilePath string
+	DevMode  bool //if true all log of debug level will be outputted or will be ignored,the default value is true
+	//@TODO
 	ToDifferentFile bool
 
 	Maxbuffer     string
@@ -20,6 +22,7 @@ var jsonConfig *LogxConfig
 
 //priority of configure from file is higher than flags
 func LoadConfJson(conf []byte) *LogxConfig {
+	log.Printf("conf: %s\n", conf)
 	jsonConfig = new(LogxConfig)
 	jsonConfig.DevMode = true
 	err := json.Unmarshal(conf, &jsonConfig)
@@ -64,7 +67,7 @@ func unitParse(one string) int {
 	one = strings.TrimSpace(one)
 	amount, err := strconv.Atoi(one)
 	if err != nil {
-		return 0
+		panic(err)
 	}
 	return amount * i
 }
