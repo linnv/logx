@@ -2,7 +2,6 @@ package logx
 
 import (
 	"errors"
-	"os"
 )
 
 const calldepth = 2
@@ -23,10 +22,3 @@ var prefix = [...][]byte{
 
 const maxDefaultBufferSize = 2 << 20 //2MB
 var ErrTooLarge = errors.New("too large slice to allocate")
-
-var gopath string
-
-func GetEnvs() string {
-	gopath = os.Getenv("GOPATH")
-	return gopath
-}

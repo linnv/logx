@@ -6,16 +6,16 @@ import (
 )
 
 func TestLoadConfJson(t *testing.T) {
-	const testLog = "/Users/Jialin/golang/src/github.com/linnv/test.log"
+	const testLog = "/tmp/test.log"
 	const bs = `{
 		  "DisableBuffer": false,
-		  "Maxbuffer": "3MB",
+		  "Maxbuffer": "2MB",
 		  "ToDifferentFile": true,
 		  "DevMode": true,
-		  "FilePath":"/Users/Jialin/golang/src/github.com/linnv/test.log"
+		  "FilePath":"/tmp/test.log"
 		}`
 	r := &LogxConfig{
-		Maxbuffer:       "3MB",
+		Maxbuffer:       "2MB",
 		MaxbufferInt:    2 * (1 << 20), //maxbuffer
 		DisableBuffer:   false,
 		ToDifferentFile: true,
@@ -26,7 +26,7 @@ func TestLoadConfJson(t *testing.T) {
 		  "DisableBuffer": false,
 		  "Maxbuffer": "1MB",
 		  "ToDifferentFile": true,
-		  "FilePath": "/Users/Jialin/golang/src/github.com/linnv/test.log"
+		  "FilePath": "/tmp/test.log"
 		}`
 	rTwo := &LogxConfig{
 		Maxbuffer:       "1MB",
@@ -65,10 +65,10 @@ func Test_unitParse(t *testing.T) {
 		args args
 		want int
 	}{
-	// {"normal", args{"1byte"}, 1},
-	// {"normal", args{"2kb"}, 2 * (1 << 10)},
-	// {"normal", args{"1mb"}, 1 << 20},
-	// {"normal", args{"1"}, 1},
+		{"normal", args{"1byte"}, 1},
+		{"normal", args{"2kb"}, 2 * (1 << 10)},
+		{"normal", args{"1mb"}, 1 << 20},
+		{"normal", args{"1"}, 1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
