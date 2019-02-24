@@ -163,6 +163,7 @@ func (l *Logx) Errorln(paramters ...interface{}) {
 	l.output(calldepth, outputLevelError, fmt.Sprintln(paramters...))
 }
 
+//GracefullyExit implements flush log buffer to undferfile and close it
 func (l *Logx) GracefullyExit() {
 	if l.underFile != nil {
 		l.Sync()

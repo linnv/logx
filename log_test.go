@@ -52,7 +52,7 @@ func TestLogx_Warn(t *testing.T) {
 	}{
 		{"normal",
 			fields{nil, true},
-			args{"string %v %s %d %.2f\n", []interface{}{"something ", "just warning string", 11000, 1.29447383}}},
+			args{"demo string %v %s %d %.2f\n", []interface{}{"something ", "just warning string", 11000, 1.29447383}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
