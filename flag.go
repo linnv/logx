@@ -17,9 +17,13 @@ const (
 
 //Init provides configure parameters of logx by args, you should call this functions after all of other flags have been defined
 func init() {
-	flag.String(flagNameFile, "", "absolut path of file,if empty no log will go into file")
-	flag.Bool(flagNameDev, true, "if true all log of debug level will be outputted or will be ignored,the default value is true")
-	once.Do(initDefaultLog)
+	once.Do(
+		func() {
+			// flag.String(flagNameFile, "", "absolut path of file,if empty no log will go into file")
+			// flag.Bool(flagNameDev, true, "if true all log of debug level will be outputted or will be ignored,the default value is true")
+			initDefaultLog()
+		})
+
 }
 
 func InitAndParsed() {
