@@ -1,6 +1,5 @@
 ### An elegant log for dev right in hand
-[![CircleCI Build Status](https://circleci.com/gh/pingcap/pd.svg?style=shield)](https://circleci.com/gh/linnv/logx)
-
+[![CircleCI](https://circleci.com/gh/linnv/logx.svg?style=shield)](https://circleci.com/gh/linnv/logx)
 
 By default, logx will output log to stdout or stderr, if you want make log output to file,there are two way you can configure logx
 
