@@ -2,6 +2,7 @@ package logx
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"runtime"
@@ -9,36 +10,20 @@ import (
 	"time"
 )
 
-//Logx  contains under field for log entity
+//Logx a simple log
 type Logx struct {
-	underFile     *os.File
-	toFile        bool
-	DevMode       bool //if true, all debug level info will be ignored
-	maxBuffer     int  //bytes,maximun size of buffer for one sync
-	disableBuffer bool
-	currentIndex  int
-	buf           []byte
+	writer io.WriteCloser //todo multi-writer
+
+	DevMode bool //if true, all debug level info will be ignored, default is true
 }
 
-func (l *Logx) resetbuf() {
-	l.currentIndex = 0
+func (l *Logx) SetWriter(w io.WriteCloser) {
+	l.writer = w
 }
 
-func (l *Logx) availableCount() int {
-	return l.maxBuffer - l.currentIndex
-}
-
-func (l *Logx) DisableBuffer(disable bool) {
-	if disable {
-		l.disableBuffer = true
-		return
-	}
-	l.disableBuffer = false
-}
-
-func (l *Logx) Sync() {
-	l.underFile.Write(l.buf[:l.currentIndex])
-	l.underFile.Sync()
+func (l *Logx) Write(bs []byte) (err error) {
+	_, err = l.writer.Write(bs)
+	return
 }
 
 func (l *Logx) output(calldepth int, level byte, content string) {
@@ -90,32 +75,7 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	bs = append(bs, ':')
 	bs = append(bs, content...)
 
-	//@TODO optimize
-	if l.toFile {
-		if l.disableBuffer {
-			l.underFile.Write(bs)
-		}
-
-		bytesLen := len(bs)
-		if bytesLen > l.availableCount() {
-			l.Sync()
-			l.resetbuf()
-			if bytesLen >= l.maxBuffer {
-				bytesLen = l.maxBuffer
-			}
-		}
-
-		for i, bi := l.currentIndex, 0; bi < bytesLen; i, bi = i+1, bi+1 {
-			l.buf[i] = bs[bi]
-		}
-		l.currentIndex += bytesLen
-	}
-	if level == outputLevelDebug {
-		os.Stdout.Write(bs)
-		return
-	}
-	//other level of log output to stderr
-	os.Stderr.Write(bs)
+	l.writer.Write(bs)
 }
 
 func (l *Logx) EnableDevMode(enabled bool) {
@@ -165,23 +125,9 @@ func (l *Logx) Errorln(paramters ...interface{}) {
 
 //GracefullyExit implements flush log buffer to undferfile and close it
 func (l *Logx) GracefullyExit() {
-	if l.underFile != nil {
-		l.Sync()
-		l.underFile.Close()
+	if l.writer != nil {
+		l.writer.Close()
 	}
-}
-
-func (l *Logx) LogConfigure() {
-	println("to file:", l.toFile)
-	println("dev mode:", l.DevMode)
-	if l.underFile != nil {
-		println("under file:", l.underFile.Name())
-		println("DisableBuffer:", l.disableBuffer)
-	} else {
-		println("file no provied")
-	}
-	println("max buffer:", l.maxBuffer)
-	println("current index:", l.currentIndex)
 }
 
 func checkFileAvailable(filepath string) (*os.File, error) {
@@ -216,54 +162,12 @@ func checkDirAvailable(filepath string) error {
 	return nil
 }
 
-func newLogxFile() (newLog *Logx) {
-	flags := GetFlags()
+func NewLogx(w io.WriteCloser) *Logx {
 	l := &Logx{
-		DevMode: flags.DevMode,
-	}
-	filepath := flags.FilePath
-	if jsonConfig != nil {
-		filepath = jsonConfig.FilePath
-		l.DevMode = jsonConfig.DevMode
-		l.disableBuffer = jsonConfig.DisableBuffer
-		l.maxBuffer = jsonConfig.MaxbufferInt
-	}
-	if len(filepath) < 1 || !os.IsPathSeparator(filepath[0]) {
-		return l
-	}
-
-	if err := checkDirAvailable(filepath); err != nil {
-		panic(err.Error())
-	}
-	if fd, err := checkFileAvailable(filepath); err != nil {
-		panic(err.Error())
-	} else {
-		newLogx(fd, l)
+		writer:  w,
+		DevMode: true,
 	}
 	return l
-}
-
-func newLogx(fd *os.File, l *Logx) {
-	if fd == nil || l == nil {
-		return
-	}
-
-	l.underFile = fd
-	l.toFile = true
-	newSliceByte := func(n int) []byte {
-		defer func() {
-			if recover() != nil {
-				panic(ErrTooLarge)
-			}
-		}()
-		return make([]byte, n)
-	}
-	l.buf = newSliceByte(l.maxBuffer)
-	return
-}
-
-func NewLogx() *Logx {
-	return newLogxFile()
 }
 
 // Cheap integer to fixed-width decimal ASCII.  Give a negative width to avoid zero-padding.

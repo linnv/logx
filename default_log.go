@@ -8,10 +8,6 @@ import (
 //default logger
 var Log *Logx
 
-func DisableBuffer(disable bool) {
-	Log.DisableBuffer(disable)
-}
-
 func Fatalln(paramters ...interface{}) {
 	Log.output(calldepth, outputLevelFatal, logRed(fmt.Sprintln(paramters...)))
 	Log.GracefullyExit()
@@ -59,14 +55,6 @@ func Warnf(format string, parameters ...interface{}) {
 
 func EnableDevMode(enabled bool) {
 	Log.EnableDevMode(enabled)
-}
-
-func LogConfigure() {
-	Log.LogConfigure()
-}
-
-func Sync() {
-	Log.Sync()
 }
 
 func CheckErr(err error) {

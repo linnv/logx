@@ -11,11 +11,17 @@ func TestErrorln(t *testing.T) {
 		name string
 		args args
 	}{
-		// {"normal", args{"demo string %v %s %d %.2f\n", []interface{}{"something ", "pubic default logger just warning string\n", 11000, 1.29447383}}},
+		{"normal", args{"demo string %v %s %d %.2f\n", []interface{}{"something ", "pubic default logger just warning string\n", 11000, 1.29447383}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			Errorf(tt.args.format, tt.args.paramters...)
 		})
 	}
+
+	EnableDevMode(false)
+	Debugln("abcd")
+
+	EnableDevMode(true)
+	Debugln("abcd")
 }
