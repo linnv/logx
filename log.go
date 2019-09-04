@@ -2,22 +2,23 @@ package logx
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"path"
 	"runtime"
 	"strconv"
 	"time"
+
+	"github.com/linnv/bufferlog"
 )
 
 //Logx a simple log
 type Logx struct {
-	writer io.WriteCloser //todo multi-writer
+	writer bufferlog.BufferLogger //todo multi-writer
 
 	DevMode bool //if true, all debug level info will be ignored, default is true
 }
 
-func (l *Logx) SetWriter(w io.WriteCloser) {
+func (l *Logx) SetWriter(w bufferlog.BufferLogger) {
 	l.writer = w
 }
 
@@ -109,6 +110,10 @@ func (l *Logx) Fatalf(format string, paramters ...interface{}) {
 	os.Exit(1)
 }
 
+func (l *Logx) Flush() error {
+	return l.writer.Flush()
+}
+
 func (l *Logx) Fatalln(paramters ...interface{}) {
 	l.output(calldepth, outputLevelFatal, fmt.Sprintln(paramters...))
 	l.GracefullyExit()
@@ -126,6 +131,7 @@ func (l *Logx) Errorln(paramters ...interface{}) {
 //GracefullyExit implements flush log buffer to undferfile and close it
 func (l *Logx) GracefullyExit() {
 	if l.writer != nil {
+		l.Flush()
 		l.writer.Close()
 	}
 }
@@ -162,7 +168,7 @@ func checkDirAvailable(filepath string) error {
 	return nil
 }
 
-func NewLogx(w io.WriteCloser) *Logx {
+func NewLogx(w bufferlog.BufferLogger) *Logx {
 	l := &Logx{
 		writer:  w,
 		DevMode: true,

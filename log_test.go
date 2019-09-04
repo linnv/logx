@@ -3,6 +3,8 @@ package logx
 import (
 	"os"
 	"testing"
+
+	"github.com/linnv/bufferlog"
 )
 
 func TestLogx_Debugln(t *testing.T) {
@@ -25,8 +27,9 @@ func TestLogx_Debugln(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := NewLogx(os.Stdout)
+			l := NewLogx(bufferlog.Buffer)
 			l.Debugf(tt.args.format, tt.args.paramters...)
+			l.GracefullyExit()
 		})
 	}
 }
@@ -51,7 +54,7 @@ func TestLogx_Warn(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := NewLogx(os.Stdout)
+			l := NewLogx(bufferlog.Buffer)
 			l.Errorf(tt.args.format, tt.args.paramters...)
 			l.GracefullyExit()
 		})

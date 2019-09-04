@@ -53,6 +53,10 @@ func Warnf(format string, parameters ...interface{}) {
 	Log.output(calldepth, outputLevelWarn, logYellow(fmt.Sprintf(format, parameters...)))
 }
 
+func Flush() error {
+	return Log.Flush()
+}
+
 func EnableDevMode(enabled bool) {
 	Log.EnableDevMode(enabled)
 }

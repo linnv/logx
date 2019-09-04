@@ -1,5 +1,5 @@
-github.com/linnv/bufferlog v0.0.0-20190825035908-bc4b5fc467d0 h1:0U85n3aYjYvaB8Y/s7ohP8wJ9SsBtYb8lLkohE8VEBU=
-github.com/linnv/bufferlog v0.0.0-20190825035908-bc4b5fc467d0/go.mod h1:LWIkiQ48KgsyPvhYbuLbpuG+PXQ62rMTP457GKvWVNg=
+github.com/linnv/bufferlog v1.0.1 h1:DfpkP4clH+uGEctl1GvCm98VNS4QivFjrtPxy4KcmlM=
+github.com/linnv/bufferlog v1.0.1/go.mod h1:LWIkiQ48KgsyPvhYbuLbpuG+PXQ62rMTP457GKvWVNg=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 gopkg.in/natefinch/lumberjack.v2 v2.0.0 h1:1Lc07Kr7qY4U2YPouBjpCLxpiyxIVoxqXgkXLknAOE8=

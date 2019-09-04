@@ -24,4 +24,5 @@ func TestErrorln(t *testing.T) {
 
 	EnableDevMode(true)
 	Debugln("abcd")
+	Flush()
 }
