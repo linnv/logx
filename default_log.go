@@ -28,6 +28,10 @@ func Errorf(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format, paramters...)))
 }
 
+func Errorfln(format string, paramters ...interface{}) {
+	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format+"\n", paramters...)))
+}
+
 func Debugln(parameters ...interface{}) {
 	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintln(parameters...)))
 }
