@@ -3,7 +3,6 @@ package logx
 import (
 	"fmt"
 	"os"
-	"path"
 	"runtime"
 	"strconv"
 	"time"
@@ -76,7 +75,10 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	bs = append(bs, ':')
 	bs = append(bs, content...)
 
-	l.writer.Write(bs)
+	if n, err := l.writer.Write(bs); err != nil {
+		errStr := "wrote " + strconv.Itoa(n) + " bytes want " + strconv.Itoa(len(bs)) + " bytes, err:" + err.Error()
+		print(errStr)
+	}
 }
 
 func (l *Logx) EnableDevMode(enabled bool) {
@@ -134,38 +136,6 @@ func (l *Logx) GracefullyExit() {
 		l.Flush()
 		l.writer.Close()
 	}
-}
-
-func checkFileAvailable(filepath string) (*os.File, error) {
-	fd, err := os.OpenFile(filepath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	if err != nil {
-		if os.IsPermission(err) {
-			err = os.Chmod(filepath, 0666)
-			if err != nil {
-				return nil, err
-			}
-			return checkFileAvailable(filepath)
-		}
-		return nil, err
-	}
-	return fd, nil
-}
-
-func checkDirAvailable(filepath string) error {
-	_, err := os.Stat(filepath)
-	if err == nil {
-	} else if os.IsNotExist(err) {
-		err = os.MkdirAll(path.Dir(filepath), 0766)
-		if err != nil {
-			return err
-		}
-	} else if os.IsPermission(err) {
-		err = os.Chmod(path.Dir(filepath), 0755)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func NewLogx(w bufferlog.BufferLogger) *Logx {

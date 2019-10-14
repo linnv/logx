@@ -20,5 +20,4 @@ var prefix = [...][]byte{
 	outputLevelFatal: []byte("[fatal]"),
 }
 
-const maxDefaultBufferSize = 2 << 20 //2MB
 var ErrTooLarge = errors.New("too large slice to allocate")

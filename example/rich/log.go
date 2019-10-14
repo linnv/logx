@@ -38,7 +38,7 @@ func main() {
 	logWriter := bufferlog.NewBufferLog(3*1024, time.Second*2, exit, under)
 	logger := logx.NewLogx(logWriter)
 	logger.Debugln("juset demo")
-	signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGKILL, syscall.SIGTERM, syscall.SIGSTOP)
+	signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
 	log.Print("use ctrl-c to exit: \n")
 	<-sigChan
 	close(exit)
