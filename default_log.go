@@ -32,8 +32,21 @@ func Errorfln(format string, paramters ...interface{}) {
 	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format+"\n", paramters...)))
 }
 
+func Println(parameters ...interface{}) {
+	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintln(parameters...)))
+}
+
+func Printfln(format string, parameters ...interface{}) {
+	//@TODO benchmark conversion efficiency
+	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format+"\n", parameters...)))
+}
+
 func Debugln(parameters ...interface{}) {
 	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintln(parameters...)))
+}
+
+func Printf(format string, parameters ...interface{}) {
+	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format, parameters...)))
 }
 
 func Debugfln(format string, parameters ...interface{}) {

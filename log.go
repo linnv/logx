@@ -89,6 +89,14 @@ func (l *Logx) EnableDevMode(enabled bool) {
 	l.DevMode = false
 }
 
+func (l *Logx) Printf(format string, paramters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
+}
+
+func (l *Logx) Println(paramters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintln(paramters...))
+}
+
 func (l *Logx) Debugf(format string, paramters ...interface{}) {
 	//@TODO benchmark convertion efficency
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
