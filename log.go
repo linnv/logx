@@ -93,6 +93,10 @@ func (l *Logx) Printf(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
 }
 
+func (l *Logx) Printfln(format string, paramters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+}
+
 func (l *Logx) Println(paramters ...interface{}) {
 	l.output(calldepth, outputLevelDebug, fmt.Sprintln(paramters...))
 }
@@ -102,12 +106,20 @@ func (l *Logx) Debugf(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
 }
 
+func (l *Logx) Debugfln(format string, paramters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+}
+
 func (l *Logx) Debugln(paramters ...interface{}) {
 	l.output(calldepth, outputLevelDebug, fmt.Sprintln(paramters...))
 }
 
-func (l *Logx) Warnf(paramters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintln(paramters...))
+func (l *Logx) Warnf(format string, paramters ...interface{}) {
+	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format, paramters...))
+}
+
+func (l *Logx) Warnfln(format string, paramters ...interface{}) {
+	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format+"\n", paramters...))
 }
 
 func (l *Logx) Warnln(paramters ...interface{}) {
@@ -132,6 +144,10 @@ func (l *Logx) Fatalln(paramters ...interface{}) {
 
 func (l *Logx) Errorf(format string, paramters ...interface{}) {
 	l.output(calldepth, outputLevelError, fmt.Sprintf(format, paramters...))
+}
+
+func (l *Logx) Errorfln(format string, paramters ...interface{}) {
+	l.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", paramters...))
 }
 
 func (l *Logx) Errorln(paramters ...interface{}) {
