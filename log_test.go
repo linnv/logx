@@ -13,8 +13,8 @@ func TestLogx_Debugln(t *testing.T) {
 		toFile    bool
 	}
 	type args struct {
-		format    string
-		paramters []interface{}
+		format     string
+		parameters []interface{}
 	}
 	tests := []struct {
 		name   string
@@ -28,7 +28,7 @@ func TestLogx_Debugln(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			l := NewLogx(bufferlog.Buffer)
-			l.Debugf(tt.args.format, tt.args.paramters...)
+			l.Debugf(tt.args.format, tt.args.parameters...)
 			l.GracefullyExit()
 		})
 	}
@@ -40,8 +40,8 @@ func TestLogx_Warn(t *testing.T) {
 		toFile    bool
 	}
 	type args struct {
-		format    string
-		paramters []interface{}
+		format     string
+		parameters []interface{}
 	}
 	tests := []struct {
 		name   string
@@ -55,7 +55,7 @@ func TestLogx_Warn(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			l := NewLogx(bufferlog.Buffer)
-			l.Errorf(tt.args.format, tt.args.paramters...)
+			l.Errorf(tt.args.format, tt.args.parameters...)
 			l.GracefullyExit()
 		})
 	}

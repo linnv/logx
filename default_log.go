@@ -2,34 +2,36 @@ package logx
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"strings"
 )
 
 //default logger
 var Log *Logx
 
-func Fatalln(paramters ...interface{}) {
-	Log.output(calldepth, outputLevelFatal, logRed(fmt.Sprintln(paramters...)))
+func Fatalln(parameters ...interface{}) {
+	Log.output(calldepth, outputLevelFatal, logRed(fmt.Sprintln(parameters...)))
 	Log.GracefullyExit()
 	os.Exit(1)
 }
 
-func Fatalf(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelFatal, logRed(fmt.Sprintf(format, paramters...)))
+func Fatalf(format string, parameters ...interface{}) {
+	Log.output(calldepth, outputLevelFatal, logRed(fmt.Sprintf(format, parameters...)))
 	Log.GracefullyExit()
 	os.Exit(1)
 }
 
-func Errorln(paramters ...interface{}) {
-	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintln(paramters...)))
+func Errorln(parameters ...interface{}) {
+	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintln(parameters...)))
 }
 
-func Errorf(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format, paramters...)))
+func Errorf(format string, parameters ...interface{}) {
+	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format, parameters...)))
 }
 
-func Errorfln(format string, paramters ...interface{}) {
-	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format+"\n", paramters...)))
+func Errorfln(format string, parameters ...interface{}) {
+	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintf(format+"\n", parameters...)))
 }
 
 func Println(parameters ...interface{}) {
@@ -88,4 +90,15 @@ func PanicErr(err error) {
 	if err != nil {
 		panic(err.Error())
 	}
+}
+
+func EnableDebug(w http.ResponseWriter, r *http.Request) {
+	debug := r.FormValue("debug")
+	debug = strings.ToLower(debug)
+	if strings.Contains(debug, "on") || strings.Contains(debug, "true") {
+		EnableDevMode(true)
+	} else {
+		EnableDevMode(false)
+	}
+	fmt.Fprintf(w, " log debug feature:%v", Log.DevMode)
 }

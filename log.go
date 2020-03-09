@@ -89,45 +89,45 @@ func (l *Logx) EnableDevMode(enabled bool) {
 	l.DevMode = false
 }
 
-func (l *Logx) Printf(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
+func (l *Logx) Printf(format string, parameters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
-func (l *Logx) Printfln(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+func (l *Logx) Printfln(format string, parameters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
-func (l *Logx) Println(paramters ...interface{}) {
-	l.output(calldepth, outputLevelDebug, fmt.Sprintln(paramters...))
+func (l *Logx) Println(parameters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintln(parameters...))
 }
 
-func (l *Logx) Debugf(format string, paramters ...interface{}) {
-	//@TODO benchmark convertion efficency
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, paramters...))
+func (l *Logx) Debugf(format string, parameters ...interface{}) {
+	//@TODO benchmark conversion efficiency
+	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
-func (l *Logx) Debugfln(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", paramters...))
+func (l *Logx) Debugfln(format string, parameters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
-func (l *Logx) Debugln(paramters ...interface{}) {
-	l.output(calldepth, outputLevelDebug, fmt.Sprintln(paramters...))
+func (l *Logx) Debugln(parameters ...interface{}) {
+	l.output(calldepth, outputLevelDebug, fmt.Sprintln(parameters...))
 }
 
-func (l *Logx) Warnf(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format, paramters...))
+func (l *Logx) Warnf(format string, parameters ...interface{}) {
+	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format, parameters...))
 }
 
-func (l *Logx) Warnfln(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format+"\n", paramters...))
+func (l *Logx) Warnfln(format string, parameters ...interface{}) {
+	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format+"\n", parameters...))
 }
 
-func (l *Logx) Warnln(paramters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintln(paramters...))
+func (l *Logx) Warnln(parameters ...interface{}) {
+	l.output(calldepth, outputLevelWarn, fmt.Sprintln(parameters...))
 }
 
-func (l *Logx) Fatalf(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelFatal, fmt.Sprintf(format, paramters...))
+func (l *Logx) Fatalf(format string, parameters ...interface{}) {
+	l.output(calldepth, outputLevelFatal, fmt.Sprintf(format, parameters...))
 	l.GracefullyExit()
 	os.Exit(1)
 }
@@ -136,22 +136,22 @@ func (l *Logx) Flush() error {
 	return l.writer.Flush()
 }
 
-func (l *Logx) Fatalln(paramters ...interface{}) {
-	l.output(calldepth, outputLevelFatal, fmt.Sprintln(paramters...))
+func (l *Logx) Fatalln(parameters ...interface{}) {
+	l.output(calldepth, outputLevelFatal, fmt.Sprintln(parameters...))
 	l.GracefullyExit()
 	os.Exit(1)
 }
 
-func (l *Logx) Errorf(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintf(format, paramters...))
+func (l *Logx) Errorf(format string, parameters ...interface{}) {
+	l.output(calldepth, outputLevelError, fmt.Sprintf(format, parameters...))
 }
 
-func (l *Logx) Errorfln(format string, paramters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", paramters...))
+func (l *Logx) Errorfln(format string, parameters ...interface{}) {
+	l.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", parameters...))
 }
 
-func (l *Logx) Errorln(paramters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintln(paramters...))
+func (l *Logx) Errorln(parameters ...interface{}) {
+	l.output(calldepth, outputLevelError, fmt.Sprintln(parameters...))
 }
 
 //GracefullyExit implements flush log buffer to undferfile and close it

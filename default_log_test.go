@@ -4,8 +4,8 @@ import "testing"
 
 func TestErrorln(t *testing.T) {
 	type args struct {
-		format    string
-		paramters []interface{}
+		format     string
+		parameters []interface{}
 	}
 	tests := []struct {
 		name string
@@ -15,7 +15,7 @@ func TestErrorln(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			Errorf(tt.args.format, tt.args.paramters...)
+			Errorf(tt.args.format, tt.args.parameters...)
 		})
 	}
 
