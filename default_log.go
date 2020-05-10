@@ -22,6 +22,12 @@ func Fatalf(format string, parameters ...interface{}) {
 	os.Exit(1)
 }
 
+func Fatalfln(format string, parameters ...interface{}) {
+	Log.output(calldepth, outputLevelFatal, logRed(fmt.Sprintf(format+"\n", parameters...)))
+	Log.GracefullyExit()
+	os.Exit(1)
+}
+
 func Errorln(parameters ...interface{}) {
 	Log.output(calldepth, outputLevelError, logRed(fmt.Sprintln(parameters...)))
 }
