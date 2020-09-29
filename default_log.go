@@ -41,28 +41,46 @@ func Errorfln(format string, parameters ...interface{}) {
 }
 
 func Println(parameters ...interface{}) {
+	if !devMode {
+		return
+	}
 	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintln(parameters...)))
 }
 
 func Printfln(format string, parameters ...interface{}) {
+	if !devMode {
+		return
+	}
 	//@TODO benchmark conversion efficiency
 	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format+"\n", parameters...)))
 }
 
 func Debugln(parameters ...interface{}) {
+	if !devMode {
+		return
+	}
 	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintln(parameters...)))
 }
 
 func Printf(format string, parameters ...interface{}) {
+	if !devMode {
+		return
+	}
 	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format, parameters...)))
 }
 
 func Debugfln(format string, parameters ...interface{}) {
+	if !devMode {
+		return
+	}
 	//@TODO benchmark conversion efficiency
 	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format+"\n", parameters...)))
 }
 
 func Debugf(format string, parameters ...interface{}) {
+	if !devMode {
+		return
+	}
 	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format, parameters...)))
 }
 
@@ -84,6 +102,7 @@ func Flush() error {
 
 func EnableDevMode(enabled bool) {
 	Log.EnableDevMode(enabled)
+	devMode = Log.DevMode
 }
 
 func CheckErr(err error) {
