@@ -90,27 +90,51 @@ func (l *Logx) EnableDevMode(enabled bool) {
 }
 
 func (l *Logx) Printf(format string, parameters ...interface{}) {
+	if !l.DevMode {
+		return
+	}
+
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Printfln(format string, parameters ...interface{}) {
+	if !l.DevMode {
+		return
+	}
+
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
 func (l *Logx) Println(parameters ...interface{}) {
+	if !l.DevMode {
+		return
+	}
+
 	l.output(calldepth, outputLevelDebug, fmt.Sprintln(parameters...))
 }
 
 func (l *Logx) Debugf(format string, parameters ...interface{}) {
-	//@TODO benchmark conversion efficiency
+	if !l.DevMode {
+		return
+	}
+
+	//@TODO benchmark conversion efficency
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Debugfln(format string, parameters ...interface{}) {
+	if !l.DevMode {
+		return
+	}
+
 	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
 func (l *Logx) Debugln(parameters ...interface{}) {
+	if !l.DevMode {
+		return
+	}
+
 	l.output(calldepth, outputLevelDebug, fmt.Sprintln(parameters...))
 }
 
