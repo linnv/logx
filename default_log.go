@@ -41,29 +41,29 @@ func Errorfln(format string, parameters ...interface{}) {
 }
 
 func Println(parameters ...interface{}) {
-	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintln(parameters...)))
+	Log.Println(parameters...)
 }
 
 func Printfln(format string, parameters ...interface{}) {
 	//@TODO benchmark conversion efficiency
-	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format+"\n", parameters...)))
+	Log.Printfln(format, parameters...)
 }
 
 func Debugln(parameters ...interface{}) {
-	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintln(parameters...)))
+	Log.Debugln(parameters...)
 }
 
 func Printf(format string, parameters ...interface{}) {
-	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format, parameters...)))
+	Log.Printf(format, parameters...)
 }
 
 func Debugfln(format string, parameters ...interface{}) {
 	//@TODO benchmark conversion efficiency
-	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format+"\n", parameters...)))
+	Log.Debugfln(format, parameters...)
 }
 
 func Debugf(format string, parameters ...interface{}) {
-	Log.output(calldepth, outputLevelDebug, logBlue(fmt.Sprintf(format, parameters...)))
+	Log.Debugf(format, parameters...)
 }
 
 func Warnln(parameters ...interface{}) {
