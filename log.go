@@ -1,6 +1,7 @@
 package logx
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"runtime"
@@ -26,7 +27,7 @@ func (l *Logx) Write(bs []byte) (err error) {
 	return
 }
 
-func (l *Logx) output(calldepth int, level byte, content string) {
+func (l *Logx) out(calldepth int, level byte, content string) (bs []byte, err error) {
 	if level == outputLevelDebug && !l.DevMode {
 		return
 	}
@@ -46,36 +47,73 @@ func (l *Logx) output(calldepth int, level byte, content string) {
 	file = short
 
 	//30 for datatime, 5 for separetor
-	excludeLen := len(content) + len(file) + len(prefix[level]) + 35
-	bs := make([]byte, 0, excludeLen)
-	bs = append(bs, prefix[level]...)
-	bs = append(bs, ' ')
-	buf := &bs
+	// excludeLen := len(content) + len(file) + len(prefix[level]) + 35
+	// bs := make([]byte, 0, excludeLen)
+	// bs = append(bs, prefix[level]...)
+	// bs = append(bs, ' ')
+	// buf := &bs
 	t := time.Now()
-	year, month, day := t.Date()
-	itoa(buf, year, 4)
-	*buf = append(*buf, os.PathSeparator)
-	itoa(buf, int(month), 2)
-	*buf = append(*buf, os.PathSeparator)
-	itoa(buf, day, 2)
-	*buf = append(*buf, ' ')
+	// year, month, day := t.Date()
+	// itoa(buf, year, 4)
+	// *buf = append(*buf, os.PathSeparator)
+	// itoa(buf, int(month), 2)
+	// *buf = append(*buf, os.PathSeparator)
+	// itoa(buf, day, 2)
+	// *buf = append(*buf, ' ')
+	//
+	// hour, min, sec := t.Clock()
+	// itoa(buf, hour, 2)
+	// *buf = append(*buf, ':')
+	// itoa(buf, min, 2)
+	// *buf = append(*buf, ':')
+	// itoa(buf, sec, 2)
+	//
+	// bs = append(bs, ' ')
+	// bs = append(bs, file...)
+	// bs = append(bs, ' ')
+	//
+	// bs = append(bs, strconv.Itoa(line)...)
+	// bs = append(bs, ':')
+	// bs = append(bs, content...)
 
-	hour, min, sec := t.Clock()
-	itoa(buf, hour, 2)
-	*buf = append(*buf, ':')
-	itoa(buf, min, 2)
-	*buf = append(*buf, ':')
-	itoa(buf, sec, 2)
+	oneLog := logStruct{
+		Line:     line,
+		File:     file,
+		Datetime: t.Format("20060102 15:04:05"),
+		Content:  content,
+	}
 
-	bs = append(bs, ' ')
-	bs = append(bs, file...)
-	bs = append(bs, ' ')
+	return json.Marshal(oneLog)
+}
 
-	bs = append(bs, strconv.Itoa(line)...)
-	bs = append(bs, ':')
-	bs = append(bs, content...)
+func (l *Logx) output(calldepth int, level byte, content string) {
+	bs, err := l.out(calldepth, level, content)
+	if err != nil {
+		print(err.Error())
+		return
+	}
 
 	if n, err := l.writer.Write(bs); err != nil {
+		errStr := "wrote " + strconv.Itoa(n) + " bytes want " + strconv.Itoa(len(bs)) + " bytes, err:" + err.Error()
+		print(errStr)
+	}
+}
+
+var newline = []byte("\n")
+
+func (l *Logx) outputln(calldepth int, level byte, content string) {
+	bs, err := l.out(calldepth, level, content)
+	if err != nil {
+		print(err.Error())
+		return
+	}
+
+	if n, err := l.writer.Write(bs); err != nil {
+		errStr := "wrote " + strconv.Itoa(n) + " bytes want " + strconv.Itoa(len(bs)) + " bytes, err:" + err.Error()
+		print(errStr)
+	}
+
+	if n, err := l.writer.Write(newline); err != nil {
 		errStr := "wrote " + strconv.Itoa(n) + " bytes want " + strconv.Itoa(len(bs)) + " bytes, err:" + err.Error()
 		print(errStr)
 	}
@@ -94,7 +132,7 @@ func (l *Logx) Printf(format string, parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
+	l.outputln(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Printfln(format string, parameters ...interface{}) {
@@ -102,7 +140,7 @@ func (l *Logx) Printfln(format string, parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
+	l.outputln(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Println(parameters ...interface{}) {
@@ -110,7 +148,7 @@ func (l *Logx) Println(parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintln(parameters...))
+	l.outputln(calldepth, outputLevelDebug, fmt.Sprint(parameters...))
 }
 
 func (l *Logx) Debugf(format string, parameters ...interface{}) {
@@ -119,7 +157,7 @@ func (l *Logx) Debugf(format string, parameters ...interface{}) {
 	}
 
 	//@TODO benchmark conversion efficency
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
+	l.outputln(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Debugfln(format string, parameters ...interface{}) {
@@ -127,7 +165,7 @@ func (l *Logx) Debugfln(format string, parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
+	l.outputln(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Debugln(parameters ...interface{}) {
@@ -135,23 +173,23 @@ func (l *Logx) Debugln(parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintln(parameters...))
+	l.outputln(calldepth, outputLevelDebug, fmt.Sprint(parameters...))
 }
 
 func (l *Logx) Warnf(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format, parameters...))
+	l.outputln(calldepth, outputLevelWarn, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Warnfln(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format+"\n", parameters...))
+	l.outputln(calldepth, outputLevelWarn, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Warnln(parameters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintln(parameters...))
+	l.outputln(calldepth, outputLevelWarn, fmt.Sprint(parameters...))
 }
 
 func (l *Logx) Fatalf(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelFatal, fmt.Sprintf(format, parameters...))
+	l.outputln(calldepth, outputLevelFatal, fmt.Sprintf(format, parameters...))
 	l.GracefullyExit()
 	os.Exit(1)
 }
@@ -161,21 +199,21 @@ func (l *Logx) Flush() error {
 }
 
 func (l *Logx) Fatalln(parameters ...interface{}) {
-	l.output(calldepth, outputLevelFatal, fmt.Sprintln(parameters...))
+	l.outputln(calldepth, outputLevelFatal, fmt.Sprint(parameters...))
 	l.GracefullyExit()
 	os.Exit(1)
 }
 
 func (l *Logx) Errorf(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintf(format, parameters...))
+	l.outputln(calldepth, outputLevelError, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Errorfln(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", parameters...))
+	l.outputln(calldepth, outputLevelError, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Errorln(parameters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintln(parameters...))
+	l.outputln(calldepth, outputLevelError, fmt.Sprint(parameters...))
 }
 
 //GracefullyExit implements flush log buffer to undferfile and close it

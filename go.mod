@@ -5,4 +5,5 @@ go 1.13
 require (
 	github.com/linnv/bufferlog v1.1.2
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
+	k8s.io/apimachinery v0.20.1
 )
