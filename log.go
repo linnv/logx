@@ -26,12 +26,12 @@ func (l *Logx) Write(bs []byte) (err error) {
 	return
 }
 
-func (l *Logx) output(calldepth int, level byte, content string) {
-	if level == outputLevelDebug && !l.DevMode {
+func (l *Logx) Output(Calldepth int, level byte, content string) {
+	if level == OutputLevelDebug && !l.DevMode {
 		return
 	}
 
-	_, file, line, ok := runtime.Caller(calldepth)
+	_, file, line, ok := runtime.Caller(Calldepth)
 	if !ok {
 		file = "???"
 		line = 0
@@ -94,7 +94,7 @@ func (l *Logx) Printf(format string, parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
+	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Printfln(format string, parameters ...interface{}) {
@@ -102,7 +102,7 @@ func (l *Logx) Printfln(format string, parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
+	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
 func (l *Logx) Println(parameters ...interface{}) {
@@ -110,7 +110,7 @@ func (l *Logx) Println(parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintln(parameters...))
+	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintln(parameters...))
 }
 
 func (l *Logx) Debugf(format string, parameters ...interface{}) {
@@ -119,7 +119,7 @@ func (l *Logx) Debugf(format string, parameters ...interface{}) {
 	}
 
 	//@TODO benchmark conversion efficency
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format, parameters...))
+	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Debugfln(format string, parameters ...interface{}) {
@@ -127,7 +127,7 @@ func (l *Logx) Debugfln(format string, parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
+	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
 func (l *Logx) Debugln(parameters ...interface{}) {
@@ -135,23 +135,23 @@ func (l *Logx) Debugln(parameters ...interface{}) {
 		return
 	}
 
-	l.output(calldepth, outputLevelDebug, fmt.Sprintln(parameters...))
+	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintln(parameters...))
 }
 
 func (l *Logx) Warnf(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format, parameters...))
+	l.Output(Calldepth, OutputLevelWarn, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Warnfln(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintf(format+"\n", parameters...))
+	l.Output(Calldepth, OutputLevelWarn, fmt.Sprintf(format+"\n", parameters...))
 }
 
 func (l *Logx) Warnln(parameters ...interface{}) {
-	l.output(calldepth, outputLevelWarn, fmt.Sprintln(parameters...))
+	l.Output(Calldepth, OutputLevelWarn, fmt.Sprintln(parameters...))
 }
 
 func (l *Logx) Fatalf(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelFatal, fmt.Sprintf(format, parameters...))
+	l.Output(Calldepth, OutputLevelFatal, fmt.Sprintf(format, parameters...))
 	l.GracefullyExit()
 	os.Exit(1)
 }
@@ -161,21 +161,21 @@ func (l *Logx) Flush() error {
 }
 
 func (l *Logx) Fatalln(parameters ...interface{}) {
-	l.output(calldepth, outputLevelFatal, fmt.Sprintln(parameters...))
+	l.Output(Calldepth, OutputLevelFatal, fmt.Sprintln(parameters...))
 	l.GracefullyExit()
 	os.Exit(1)
 }
 
 func (l *Logx) Errorf(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintf(format, parameters...))
+	l.Output(Calldepth, OutputLevelError, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Errorfln(format string, parameters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintf(format+"\n", parameters...))
+	l.Output(Calldepth, OutputLevelError, fmt.Sprintf(format+"\n", parameters...))
 }
 
 func (l *Logx) Errorln(parameters ...interface{}) {
-	l.output(calldepth, outputLevelError, fmt.Sprintln(parameters...))
+	l.Output(Calldepth, OutputLevelError, fmt.Sprintln(parameters...))
 }
 
 //GracefullyExit implements flush log buffer to undferfile and close it
@@ -209,4 +209,8 @@ func itoa(buf *[]byte, i int, wid int) {
 	// i < 10
 	b[bp] = byte('0' + i)
 	*buf = append(*buf, b[bp:]...)
+}
+
+func (l *Logx) GetCallDepth() int {
+	return Calldepth
 }

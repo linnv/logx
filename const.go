@@ -4,20 +4,20 @@ import (
 	"errors"
 )
 
-const calldepth = 2
+const Calldepth = 2
 
 const (
-	outputLevelDebug = byte(iota)
-	outputLevelWarn
-	outputLevelError
-	outputLevelFatal
+	OutputLevelDebug = byte(iota)
+	OutputLevelWarn
+	OutputLevelError
+	OutputLevelFatal
 )
 
 var prefix = [...][]byte{
-	outputLevelDebug: []byte("[debug]"),
-	outputLevelWarn:  []byte("[warn]"),
-	outputLevelError: []byte("[error]"),
-	outputLevelFatal: []byte("[fatal]"),
+	OutputLevelDebug: []byte("[debug]"),
+	OutputLevelWarn:  []byte("[warn]"),
+	OutputLevelError: []byte("[error]"),
+	OutputLevelFatal: []byte("[fatal]"),
 }
 
 var ErrTooLarge = errors.New("too large slice to allocate")
