@@ -45,27 +45,14 @@ func (l *Logx) Output(Calldepth int, level byte, content string) {
 	}
 	file = short
 
-	//30 for datatime, 5 for separetor
-	excludeLen := len(content) + len(file) + len(prefix[level]) + 35
+	excludeLen := len(content) + len(file) + len(prefix[level]) + 21
 	bs := make([]byte, 0, excludeLen)
 	bs = append(bs, prefix[level]...)
 	bs = append(bs, ' ')
 	buf := &bs
-	t := time.Now()
-	year, month, day := t.Date()
-	itoa(buf, year, 4)
-	*buf = append(*buf, os.PathSeparator)
-	itoa(buf, int(month), 2)
-	*buf = append(*buf, os.PathSeparator)
-	itoa(buf, day, 2)
-	*buf = append(*buf, ' ')
 
-	hour, min, sec := t.Clock()
-	itoa(buf, hour, 2)
-	*buf = append(*buf, ':')
-	itoa(buf, min, 2)
-	*buf = append(*buf, ':')
-	itoa(buf, sec, 2)
+	onetime := time.Now().Format("20060102 15:04:05.000")
+	*buf = append(*buf, onetime...)
 
 	bs = append(bs, ' ')
 	bs = append(bs, file...)

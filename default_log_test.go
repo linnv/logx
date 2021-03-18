@@ -1,8 +1,14 @@
 package logx
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+	"time"
+)
 
 func TestErrorln(t *testing.T) {
+	onetime := time.Now().Format("20060102 15:04:05.000")
+	fmt.Printf("onetime: %s\n", onetime)
 	type args struct {
 		format     string
 		parameters []interface{}
@@ -21,8 +27,11 @@ func TestErrorln(t *testing.T) {
 
 	EnableDevMode(false)
 	Debugln("abcd")
+	Debugln("abcd")
 
 	EnableDevMode(true)
+	Debugln("abcd")
+	time.Sleep(time.Millisecond)
 	Debugln("abcd")
 	Flush()
 }
