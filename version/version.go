@@ -35,8 +35,8 @@ func ReadBuildInfo() {
 
 func GetInfo() string {
 	if len(GITHASH) > 0 {
-		return fmt.Sprintf(" BuildTime:%s-Version:%s-Branch:%s-Hash:%s-%s", BUILDTIME, VERSION, GITBRANCH, GITHASH[:7], fmt.Sprintf(COYPRIGHT, time.Now().Year()))
+		return fmt.Sprintf(" BuildTime:%s|Version:%s|Branch:%s|Hash:%s|%s", BUILDTIME, VERSION, GITBRANCH, GITHASH[:7], fmt.Sprintf(COYPRIGHT, time.Now().Year()))
 	} else {
-		return fmt.Sprintf(" BuildTime:%s-Version:%s-Branch:%s-Hash:%s-%s", BUILDTIME, VERSION, GITBRANCH, GITHASH, fmt.Sprintf(COYPRIGHT, time.Now().Year()))
+		return fmt.Sprintf(" BuildTime:%s|Version:%s|Branch:%s|Hash:%s|%s", BUILDTIME, VERSION, GITBRANCH, GITHASH, fmt.Sprintf(COYPRIGHT, time.Now().Year()))
 	}
 }
