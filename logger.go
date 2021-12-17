@@ -6,8 +6,11 @@ type Logger interface {
 	GetCallDepth() int
 	Debugf(format string, parameters ...interface{})
 	Debugfln(format string, parameters ...interface{})
+	Debugln(parameters ...interface{})
 	Warnf(format string, parameters ...interface{})
 	Warnfln(format string, parameters ...interface{})
+	Warnln(parameters ...interface{})
 	Errorf(format string, parameters ...interface{})
 	Errorfln(format string, parameters ...interface{})
+	Errorln(parameters ...interface{})
 }

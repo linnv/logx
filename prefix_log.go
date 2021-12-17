@@ -49,6 +49,27 @@ func (pl *PrefixLog) Debugfln(format string, parameters ...interface{}) {
 	pl.Output(pl.GetCallDepth(), OutputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
+func (pl *PrefixLog) Debugln(parameters ...interface{}) {
+	if pl == nil {
+		return
+	}
+	pl.Output(pl.GetCallDepth(), OutputLevelDebug, fmt.Sprintln(parameters...))
+}
+
+func (pl *PrefixLog) Warnln(parameters ...interface{}) {
+	if pl == nil {
+		return
+	}
+	pl.Output(pl.GetCallDepth(), OutputLevelWarn, fmt.Sprintln(parameters...))
+}
+
+func (pl *PrefixLog) Errorln(parameters ...interface{}) {
+	if pl == nil {
+		return
+	}
+	pl.Output(pl.GetCallDepth(), OutputLevelError, fmt.Sprintln(parameters...))
+}
+
 func (pl *PrefixLog) Flush() error {
 	if pl == nil {
 		return nil
