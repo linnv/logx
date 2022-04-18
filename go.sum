@@ -1,7 +1,7 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/linnv/bufferlog v1.1.2 h1:PR5ZuCr7rBf3ahf2K8Qm39/SUfr8yyPFD1vm1yTY9fI=
-github.com/linnv/bufferlog v1.1.2/go.mod h1:wRdFwIhA2qHyqydtY+k/MCYBTvft0ndoiIsfTv5eglY=
+github.com/linnv/bufferlog v1.2.0 h1:KaU35S1m4ajM+KHX08cV+n6Se/wrzLAERNZyzmwPdlc=
+github.com/linnv/bufferlog v1.2.0/go.mod h1:wRdFwIhA2qHyqydtY+k/MCYBTvft0ndoiIsfTv5eglY=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
