@@ -53,8 +53,11 @@ func DiscardCloser() io.WriteCloser {
 	return discardCloser{}
 }
 
-// with funcName disable
+// with funcName enable
 // 1782848               665.9 ns/op
+//
+// with funcName disable
+// 1843812               628.0 ns/op
 func BenchmarkLog(b *testing.B) {
 	exit := make(chan struct{})
 	logWriter := bufferlog.NewBufferLog(3*1024, time.Second*2, exit, discardCloser{})
