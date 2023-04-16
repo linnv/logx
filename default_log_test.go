@@ -2,8 +2,11 @@ package logx
 
 import (
 	"fmt"
+	"io"
 	"testing"
 	"time"
+
+	"github.com/linnv/bufferlog"
 )
 
 func TestErrorln(t *testing.T) {
@@ -34,4 +37,29 @@ func TestErrorln(t *testing.T) {
 	time.Sleep(time.Millisecond)
 	Debugln("abcd")
 	Flush()
+}
+
+type discardCloser struct{}
+
+func (discardCloser) Write(p []byte) (int, error) {
+	return len(p), nil
+}
+
+func (discardCloser) Close() error {
+	return nil
+}
+
+func DiscardCloser() io.WriteCloser {
+	return discardCloser{}
+}
+
+// with funcName disable
+// 1782848               665.9 ns/op
+func BenchmarkLog(b *testing.B) {
+	exit := make(chan struct{})
+	logWriter := bufferlog.NewBufferLog(3*1024, time.Second*2, exit, discardCloser{})
+	logger := NewLogx(logWriter)
+	for i := 0; i < b.N; i++ {
+		logger.Debugln("juset demo")
+	}
 }
