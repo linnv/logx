@@ -15,7 +15,7 @@ const (
 	flagNameDev = "logxDev"
 )
 
-//Init provides configure parameters of logx by args, you should call this functions after all of other flags have been defined
+// Init provides configure parameters of logx by args, you should call this functions after all of other flags have been defined
 func init() {
 	devMode = *flag.Bool(flagNameDev, true, "if true all log of debug level will be outputted or will be ignored,the default value is true")
 	once.Do(initDefaultLog)

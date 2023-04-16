@@ -12,7 +12,13 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+// FuncDemoA implements ...
+func FuncDemoA() {
+	logx.Debugf("from %+v\n", 999)
+}
+
 func main() {
+	FuncDemoA()
 	logx.Debugln(111)
 	logx.Warnln(111)
 	logx.Errorln(111)

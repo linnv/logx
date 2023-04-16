@@ -10,7 +10,7 @@ import (
 	"github.com/linnv/bufferlog"
 )
 
-//Logx a simple log
+// Logx a simple log
 type Logx struct {
 	writer bufferlog.BufferLogger //todo multi-writer
 
@@ -31,7 +31,7 @@ func (l *Logx) Output(Calldepth int, level byte, content string) {
 		return
 	}
 
-	_, file, line, ok := runtime.Caller(Calldepth)
+	pc, file, line, ok := runtime.Caller(Calldepth)
 	if !ok {
 		file = "???"
 		line = 0
@@ -43,9 +43,11 @@ func (l *Logx) Output(Calldepth int, level byte, content string) {
 			break
 		}
 	}
+
+	callerFunc := runtime.FuncForPC(pc).Name()
 	file = short
 
-	excludeLen := len(content) + len(file) + len(prefix[level]) + 21
+	excludeLen := len(callerFunc) + len(content) + len(file) + len(prefix[level]) + 22
 	bs := make([]byte, 0, excludeLen)
 	bs = append(bs, prefix[level]...)
 	bs = append(bs, ' ')
@@ -59,6 +61,8 @@ func (l *Logx) Output(Calldepth int, level byte, content string) {
 	bs = append(bs, ' ')
 
 	bs = append(bs, strconv.Itoa(line)...)
+	bs = append(bs, ' ')
+	bs = append(bs, callerFunc...)
 	bs = append(bs, ':')
 	bs = append(bs, content...)
 
@@ -165,7 +169,7 @@ func (l *Logx) Errorln(parameters ...interface{}) {
 	l.Output(Calldepth, OutputLevelError, fmt.Sprintln(parameters...))
 }
 
-//GracefullyExit implements flush log buffer to undferfile and close it
+// GracefullyExit implements flush log buffer to undferfile and close it
 func (l *Logx) GracefullyExit() {
 	if l.writer != nil {
 		l.Flush()

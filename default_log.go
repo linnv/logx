@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-//default logger
+// default logger
 var Log *Logx
 
 func Fatalln(parameters ...interface{}) {
