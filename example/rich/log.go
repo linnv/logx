@@ -17,6 +17,29 @@ func FuncDemoA() {
 	logx.Debugf("from %+v\n", 999)
 }
 
+// PerformanceCheck implements ...
+func PerformanceCheck(n int) bool {
+	sigChan := make(chan os.Signal, 2)
+	exit := make(chan struct{})
+	fileBuffer := "./demoBuffer.log"
+	under := &lumberjack.Logger{
+		Filename:   fileBuffer,
+		MaxSize:    100, // megabytes
+		MaxBackups: 3,
+		LocalTime:  true,
+		MaxAge:     28, // days
+	}
+	logWriter := bufferlog.NewBufferLog(3*1024, time.Second*2, exit, under)
+	logger := logx.NewLogx(logWriter)
+	logger.Debugln("juset demo")
+	signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
+	log.Print("use ctrl-c to exit: \n")
+	<-sigChan
+	close(exit)
+
+	return false
+}
+
 func main() {
 	FuncDemoA()
 	logx.Debugln(111)

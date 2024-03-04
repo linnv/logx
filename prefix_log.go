@@ -7,6 +7,26 @@ type PrefixLog struct {
 	Log    Logger
 }
 
+func (pl *PrefixLog) Infof(format string, parameters ...interface{}) {
+	if pl == nil {
+		return
+	}
+	pl.Output(pl.GetCallDepth(), OutputLevelInfo, fmt.Sprintf(format, parameters...))
+}
+
+func (pl *PrefixLog) Infofln(format string, parameters ...interface{}) {
+	if pl == nil {
+		return
+	}
+	pl.Output(pl.GetCallDepth(), OutputLevelInfo, fmt.Sprintf(format+"\n", parameters...))
+}
+
+func (pl *PrefixLog) Infoln(parameters ...interface{}) {
+	if pl == nil {
+		return
+	}
+	pl.Output(pl.GetCallDepth(), OutputLevelInfo, fmt.Sprintln(parameters...))
+}
 func (pl *PrefixLog) Warnf(format string, parameters ...interface{}) {
 	if pl == nil {
 		return

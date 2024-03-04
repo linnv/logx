@@ -31,11 +31,13 @@ func TestErrorln(t *testing.T) {
 	EnableDevMode(false)
 	Debugln("abcd")
 	Debugln("abcd")
+	Infoln("abcd")
 
 	EnableDevMode(true)
 	Debugln("abcd")
 	time.Sleep(time.Millisecond)
 	Debugln("abcd")
+	Infoln("info abcd")
 	Flush()
 }
 

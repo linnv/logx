@@ -68,7 +68,7 @@ func (l *Logx) Output(Calldepth int, level byte, content string) {
 
 	if n, err := l.writer.Write(bs); err != nil {
 		errStr := "wrote " + strconv.Itoa(n) + " bytes want " + strconv.Itoa(len(bs)) + " bytes, err:" + err.Error()
-		print(errStr)
+		println(errStr)
 	}
 }
 
@@ -102,6 +102,19 @@ func (l *Logx) Println(parameters ...interface{}) {
 	}
 
 	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintln(parameters...))
+}
+
+func (l *Logx) Infof(format string, parameters ...interface{}) {
+	//@TODO benchmark conversion efficency
+	l.Output(Calldepth, OutputLevelInfo, fmt.Sprintf(format, parameters...))
+}
+
+func (l *Logx) Infofln(format string, parameters ...interface{}) {
+	l.Output(Calldepth, OutputLevelInfo, fmt.Sprintf(format+"\n", parameters...))
+}
+
+func (l *Logx) Infoln(parameters ...interface{}) {
+	l.Output(Calldepth, OutputLevelInfo, fmt.Sprintln(parameters...))
 }
 
 func (l *Logx) Debugf(format string, parameters ...interface{}) {

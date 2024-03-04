@@ -84,6 +84,18 @@ func Debugf(format string, parameters ...interface{}) {
 	Log.Output(Calldepth, OutputLevelDebug, logBlue(fmt.Sprintf(format, parameters...)))
 }
 
+func Infoln(parameters ...interface{}) {
+	Log.Output(Calldepth, OutputLevelInfo, logBlue(fmt.Sprintln(parameters...)))
+}
+func Infofln(format string, parameters ...interface{}) {
+	//@TODO benchmark conversion efficiency
+	Log.Output(Calldepth, OutputLevelInfo, logBlue(fmt.Sprintf(format+"\n", parameters...)))
+}
+
+func Infof(format string, parameters ...interface{}) {
+	Log.Output(Calldepth, OutputLevelInfo, logBlue(fmt.Sprintf(format, parameters...)))
+}
+
 func Warnln(parameters ...interface{}) {
 	Log.Output(Calldepth, OutputLevelWarn, logYellow(fmt.Sprintln(parameters...)))
 }
