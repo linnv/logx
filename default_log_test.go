@@ -35,8 +35,11 @@ func TestErrorln(t *testing.T) {
 
 	EnableDevMode(true)
 	Debugln("abcd")
+	SetLevel(OutputLevelInfo)
 	time.Sleep(time.Millisecond)
-	Debugln("abcd")
+	Infoln("info abcd")
+	SetLevel(OutputLevelDebug)
+	Debugln("debug abcd")
 	Infoln("info abcd")
 	Flush()
 }

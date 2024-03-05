@@ -7,7 +7,7 @@ import (
 const Calldepth = 2
 
 const (
-	OutputLevelDebug = byte(iota)
+	OutputLevelDebug = int32(iota)
 	OutputLevelInfo
 	OutputLevelWarn
 	OutputLevelError

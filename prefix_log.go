@@ -104,7 +104,7 @@ func (pl *PrefixLog) GetCallDepth() int {
 	return pl.Log.GetCallDepth() + 1
 }
 
-func (pl *PrefixLog) Output(calldepth int, level byte, content string) {
+func (pl *PrefixLog) Output(calldepth int, level int32, content string) {
 	if pl == nil {
 		return
 	}

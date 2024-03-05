@@ -112,9 +112,12 @@ func Flush() error {
 	return Log.Flush()
 }
 
+func SetLevel(level int32) {
+	Log.SetLevel(level)
+}
+
 func EnableDevMode(enabled bool) {
 	Log.EnableDevMode(enabled)
-	devMode = Log.DevMode
 }
 
 func CheckErr(err error) {
@@ -137,5 +140,5 @@ func EnableDebug(w http.ResponseWriter, r *http.Request) {
 	} else {
 		EnableDevMode(false)
 	}
-	fmt.Fprintf(w, " log debug feature:%v", Log.DevMode)
+	fmt.Fprintf(w, " log debug feature:%v", prefix[Log.level.Load()])
 }

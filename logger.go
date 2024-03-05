@@ -2,7 +2,7 @@ package logx
 
 type Logger interface {
 	Flush() error
-	Output(Calldepth int, level byte, content string)
+	Output(Calldepth int, level int32, content string)
 	GetCallDepth() int
 	Debugf(format string, parameters ...interface{})
 	Debugfln(format string, parameters ...interface{})

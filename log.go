@@ -5,6 +5,7 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"sync/atomic"
 	"time"
 
 	"github.com/linnv/bufferlog"
@@ -14,7 +15,7 @@ import (
 type Logx struct {
 	writer bufferlog.BufferLogger //todo multi-writer
 
-	DevMode bool //if true, all debug level info will be ignored, default is true
+	level atomic.Int32
 }
 
 func (l *Logx) SetWriter(w bufferlog.BufferLogger) {
@@ -26,8 +27,8 @@ func (l *Logx) Write(bs []byte) (err error) {
 	return
 }
 
-func (l *Logx) Output(Calldepth int, level byte, content string) {
-	if level == OutputLevelDebug && !l.DevMode {
+func (l *Logx) Output(Calldepth int, level int32, content string) {
+	if level < l.level.Load() {
 		return
 	}
 
@@ -72,35 +73,26 @@ func (l *Logx) Output(Calldepth int, level byte, content string) {
 	}
 }
 
+func (l *Logx) SetLevel(level int32) {
+	l.level.Store(level)
+}
+
 func (l *Logx) EnableDevMode(enabled bool) {
 	if enabled {
-		l.DevMode = true
+		l.level.Store(OutputLevelDebug)
 		return
 	}
-	l.DevMode = false
 }
 
 func (l *Logx) Printf(format string, parameters ...interface{}) {
-	if !l.DevMode {
-		return
-	}
-
 	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Printfln(format string, parameters ...interface{}) {
-	if !l.DevMode {
-		return
-	}
-
 	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
 func (l *Logx) Println(parameters ...interface{}) {
-	if !l.DevMode {
-		return
-	}
-
 	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintln(parameters...))
 }
 
@@ -118,27 +110,15 @@ func (l *Logx) Infoln(parameters ...interface{}) {
 }
 
 func (l *Logx) Debugf(format string, parameters ...interface{}) {
-	if !l.DevMode {
-		return
-	}
-
 	//@TODO benchmark conversion efficency
 	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintf(format, parameters...))
 }
 
 func (l *Logx) Debugfln(format string, parameters ...interface{}) {
-	if !l.DevMode {
-		return
-	}
-
 	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintf(format+"\n", parameters...))
 }
 
 func (l *Logx) Debugln(parameters ...interface{}) {
-	if !l.DevMode {
-		return
-	}
-
 	l.Output(Calldepth, OutputLevelDebug, fmt.Sprintln(parameters...))
 }
 
@@ -192,9 +172,9 @@ func (l *Logx) GracefullyExit() {
 
 func NewLogx(w bufferlog.BufferLogger) *Logx {
 	l := &Logx{
-		writer:  w,
-		DevMode: true,
+		writer: w,
 	}
+	l.level.Store(OutputLevelDebug)
 	return l
 }
 
