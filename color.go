@@ -1,6 +1,8 @@
 package logx
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const (
 	colorRed    = uint8(31)
@@ -9,6 +11,9 @@ const (
 )
 
 func logBlue(s string) string {
+	// if strings.HasSuffix(s,"\n") {
+	// return fmt.Sprintf("\x1b[%dm%s\x1b[0m", colorBlue, s)
+	// }
 	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", colorBlue, s)
 }
 

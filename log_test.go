@@ -5,9 +5,13 @@ import (
 	"testing"
 
 	"github.com/linnv/bufferlog"
+	"go.uber.org/zap"
 )
 
 func TestLogx_Debugln(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+
 	type fields struct {
 		underFile *os.File
 		toFile    bool
@@ -28,6 +32,7 @@ func TestLogx_Debugln(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			l := NewLogx(bufferlog.Buffer)
+			l.SetZapLogger(logger)
 			l.Debugf(tt.args.format, tt.args.parameters...)
 			l.GracefullyExit()
 		})

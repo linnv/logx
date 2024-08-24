@@ -7,9 +7,14 @@ import (
 	"time"
 
 	"github.com/linnv/bufferlog"
+	"go.uber.org/zap"
 )
 
 func TestErrorln(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+	Log.SetZapLogger(logger)
+
 	onetime := time.Now().Format("20060102 15:04:05.000")
 	fmt.Printf("onetime: %s\n", onetime)
 	type args struct {
@@ -32,6 +37,7 @@ func TestErrorln(t *testing.T) {
 	Debugln("abcd")
 	Debugln("abcd")
 	Infoln("abcd")
+	Warnfln("abcdwarn %d", 0003)
 
 	EnableDevMode(true)
 	Debugln("abcd")

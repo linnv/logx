@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"go.uber.org/zap"
 )
 
 // default logger
@@ -114,6 +116,10 @@ func Flush() error {
 
 func SetLevel(level int32) {
 	Log.SetLevel(level)
+}
+
+func SetZapLogger(oneLogger *zap.Logger) {
+	Log.SetZapLogger(oneLogger)
 }
 
 func EnableDevMode(enabled bool) {

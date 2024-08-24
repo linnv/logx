@@ -5,17 +5,24 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync/atomic"
 	"time"
 
 	"github.com/linnv/bufferlog"
+	"go.uber.org/zap"
 )
 
 // Logx a simple log
 type Logx struct {
 	writer bufferlog.BufferLogger //todo multi-writer
 
-	level atomic.Int32
+	level  atomic.Int32
+	zaplog *zap.Logger
+}
+
+func (l *Logx) SetZapLogger(oneLogger *zap.Logger) {
+	l.zaplog = oneLogger
 }
 
 func (l *Logx) SetWriter(w bufferlog.BufferLogger) {
@@ -28,6 +35,27 @@ func (l *Logx) Write(bs []byte) (err error) {
 }
 
 func (l *Logx) Output(Calldepth int, level int32, content string) {
+	if l.zaplog != nil {
+		content = strings.TrimSuffix(content, "\n")
+
+		content = strings.Replace(content, "\n\x1b[0m", "\x1b[0m", 1)
+
+		switch level {
+		case OutputLevelDebug:
+			l.zaplog.Debug(content)
+		case OutputLevelInfo:
+			l.zaplog.Info(content)
+		case OutputLevelWarn:
+			l.zaplog.Warn(content)
+		case OutputLevelError:
+			l.zaplog.Error(content)
+		case OutputLevelFatal:
+			l.zaplog.Fatal(content)
+		}
+
+		return
+	}
+
 	if level < l.level.Load() {
 		return
 	}
