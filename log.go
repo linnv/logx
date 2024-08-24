@@ -39,18 +39,19 @@ func (l *Logx) Output(Calldepth int, level int32, content string) {
 		content = strings.TrimSuffix(content, "\n")
 
 		content = strings.Replace(content, "\n\x1b[0m", "\x1b[0m", 1)
-
 		switch level {
 		case OutputLevelDebug:
-			l.zaplog.Debug(content)
+			l.zaplog.WithOptions(zap.AddCallerSkip(Calldepth)).Debug(content)
 		case OutputLevelInfo:
-			l.zaplog.Info(content)
+			l.zaplog.WithOptions(zap.AddCallerSkip(Calldepth)).Info(content)
 		case OutputLevelWarn:
-			l.zaplog.Warn(content)
+			l.zaplog.WithOptions(zap.AddCallerSkip(Calldepth)).Warn(content)
 		case OutputLevelError:
-			l.zaplog.Error(content)
+			l.zaplog.WithOptions(zap.AddCallerSkip(Calldepth)).Error(content)
 		case OutputLevelFatal:
-			l.zaplog.Fatal(content)
+			l.zaplog.WithOptions(zap.AddCallerSkip(Calldepth)).Fatal(content)
+		default:
+			l.zaplog.WithOptions(zap.AddCallerSkip(Calldepth)).Warn(content)
 		}
 
 		return
